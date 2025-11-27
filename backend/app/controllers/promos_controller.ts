@@ -16,10 +16,17 @@ export default class PromosController {
     await bouncer.with(EmailPolicy).authorize('viewAny')
 
     const page = request.input('page', 1)
-    const limit = 20
+    const limit = request.input('limit', 20)
+    // Convert string "false"/"true" to actual boolean
+    const includeExpiredRaw = request.input('includeExpired', 'false')
+    const includeExpired = includeExpiredRaw === 'true' || includeExpiredRaw === true
+    const category = request.input('category')
 
     // Get emails with promo codes using repository
-    const emails = await this.emailRepository.findWithPromoCodesForUser(user.id, page, limit)
+    const emails = await this.emailRepository.findWithPromoCodesForUser(user.id, page, limit, {
+      includeExpired,
+      category,
+    })
 
     return response.ok(emails)
   }

@@ -365,3 +365,63 @@
     color: #DC2626;
     text-decoration: line-through;
 }
+
+/* Infinite Scroll Loading */
+.loading-trigger {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    margin-top: 1rem;
+}
+
+.loading-spinner {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.loading-spinner::before {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border: 2px solid #e5e7eb;
+    border-top-color: #3b82f6;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.end-of-list {
+    text-align: center;
+    padding: 3rem 2rem;
+    margin-top: 1rem;
+}
+
+.end-of-list p {
+    color: var(--text-tertiary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.end-of-list p::before,
+.end-of-list p::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border-light), transparent);
+    max-width: 100px;
+}

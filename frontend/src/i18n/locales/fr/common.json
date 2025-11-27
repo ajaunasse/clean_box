@@ -1,0 +1,18 @@
+{
+  "app_name": "Guard Inbox",
+  "loading": "Chargement...",
+  "error": "Erreur",
+  "success": "Succès",
+  "cancel": "Annuler",
+  "save": "Enregistrer",
+  "delete": "Supprimer",
+  "edit": "Modifier",
+  "close": "Fermer",
+  "back": "Retour",
+  "next": "Suivant",
+  "previous": "Précédent",
+  "search": "Rechercher",
+  "filter": "Filtrer",
+  "clear": "Effacer",
+  "no_results": "Aucun résultat trouvé"
+}

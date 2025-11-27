@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import api from '../api/client';
 import { Toast } from '../components/Toast';
 import './Vault.css';
@@ -73,23 +73,34 @@ const CATEGORIES = [
   'Other',
 ];
 
+const ITEMS_PER_PAGE = 20;
+
 export const Vault = () => {
   const [codes, setCodes] = useState<PromoCode[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchBrand, setSearchBrand] = useState<string>('');
   const [showExpired, setShowExpired] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const [toast, setToast] = useState<{
     message: string;
     type: 'success' | 'info' | 'error';
   } | null>(null);
+  const observerTarget = useRef<HTMLDivElement>(null);
+  const isInitialMount = useRef(true);
 
   useEffect(() => {
     const fetchCodes = async () => {
       try {
-        const res = await api.get('/promo-codes');
+        setIsLoading(true);
+        const res = await api.get('/promo-codes', { params: { page: 1, limit: ITEMS_PER_PAGE } });
+        console.log('[VAULT] Initial fetch response:', res.data);
+        const codesData = res.data.data;
+
         // Sort: expiring soon first, then by expiry date, then by created date
-        const sorted = res.data.data.sort((a: PromoCode, b: PromoCode) => {
+        const sorted = codesData.sort((a: PromoCode, b: PromoCode) => {
           const aExpiringSoon = isExpiringSoon(a.expiresAt);
           const bExpiringSoon = isExpiringSoon(b.expiresAt);
 
@@ -102,7 +113,14 @@ export const Vault = () => {
 
           return new Date(b.email.sentAt).getTime() - new Date(a.email.sentAt).getTime();
         });
+
         setCodes(sorted);
+        setCurrentPage(1);
+
+        // Lucid paginate returns: { data, meta: { total, per_page, current_page, last_page, first_page, ... } }
+        const hasMorePages = res.data.meta && res.data.meta.current_page < res.data.meta.last_page;
+        console.log('[VAULT] Pagination meta:', res.data.meta, 'hasMore:', hasMorePages);
+        setHasMore(hasMorePages);
       } catch (error) {
         console.error('Failed to fetch codes', error);
       } finally {
@@ -110,13 +128,90 @@ export const Vault = () => {
       }
     };
 
-    fetchCodes();
+    // Only fetch on initial mount (not on subsequent renders)
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      fetchCodes();
+    }
   }, []);
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     setToast({ message: 'Code copied to clipboard!', type: 'success' });
   };
+
+  // Infinite scroll - load more from backend
+  const loadMore = useCallback(async () => {
+    if (isLoadingMore || !hasMore) {
+      console.log('[VAULT] loadMore skipped - isLoadingMore:', isLoadingMore, 'hasMore:', hasMore);
+      return;
+    }
+
+    try {
+      console.log('[VAULT] loadMore starting - currentPage:', currentPage);
+      setIsLoadingMore(true);
+      const nextPage = currentPage + 1;
+      const res = await api.get('/promo-codes', { params: { page: nextPage, limit: ITEMS_PER_PAGE } });
+      console.log('[VAULT] loadMore response:', res.data);
+      const newCodes = res.data.data;
+
+      if (newCodes.length > 0) {
+        // Sort new codes
+        const sorted = newCodes.sort((a: PromoCode, b: PromoCode) => {
+          const aExpiringSoon = isExpiringSoon(a.expiresAt);
+          const bExpiringSoon = isExpiringSoon(b.expiresAt);
+
+          if (aExpiringSoon && !bExpiringSoon) return -1;
+          if (!aExpiringSoon && bExpiringSoon) return 1;
+
+          if (a.expiresAt && b.expiresAt) {
+            return new Date(a.expiresAt).getTime() - new Date(b.expiresAt).getTime();
+          }
+
+          return new Date(b.email.sentAt).getTime() - new Date(a.email.sentAt).getTime();
+        });
+
+        console.log('[VAULT] Adding', sorted.length, 'new codes');
+        setCodes((prev) => [...prev, ...sorted]);
+        setCurrentPage(nextPage);
+
+        const hasMorePages = res.data.meta && res.data.meta.current_page < res.data.meta.last_page;
+        console.log('[VAULT] Updated hasMore:', hasMorePages);
+        setHasMore(hasMorePages);
+      } else {
+        console.log('[VAULT] No more codes');
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error('Failed to load more codes', error);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  }, [currentPage, hasMore, isLoadingMore]);
+
+  useEffect(() => {
+    if (!hasMore || isLoadingMore) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          loadMore();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const currentTarget = observerTarget.current;
+    if (currentTarget) {
+      observer.observe(currentTarget);
+    }
+
+    return () => {
+      if (currentTarget) {
+        observer.unobserve(currentTarget);
+      }
+    };
+  }, [loadMore, hasMore, isLoadingMore]);
 
   // Filter codes based on selected category, brand search, and expiry status
   const filteredCodes = codes.filter((code) => {
@@ -214,61 +309,76 @@ export const Vault = () => {
             <p>Try adjusting your category or brand search.</p>
           </div>
         ) : (
-          <div className="vault-list">
-            {filteredCodes.map((code) => {
-              const expiringSoon = isExpiringSoon(code.expiresAt);
-              const expired = isExpired(code.expiresAt);
+          <>
+            <div className="vault-list">
+              {filteredCodes.map((code) => {
+                const expiringSoon = isExpiringSoon(code.expiresAt);
+                const expired = isExpired(code.expiresAt);
 
-              return (
-                <a
-                  key={code.id}
-                  href={code.url || getBrandUrl(code.brand)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`vault-item ${expired ? 'expired' : ''}`}
-                >
-                  <div className="vault-item-left">
-                    <div className="vault-header-row">
-                      <div className="vault-vendor">{code.brand}</div>
-                      <span
-                        className="category-badge"
-                        style={{ backgroundColor: getCategoryColor(code.category) }}
-                      >
-                        {code.category}
-                      </span>
-                      {expiringSoon && !expired && (
-                        <span className="expire-soon-badge">Expires soon!</span>
-                      )}
-                      {expired && <span className="expired-badge">Expired</span>}
-                    </div>
-                    <div className="vault-discount">{code.discountRaw}</div>
-                    <div className="vault-subject">{code.summary || code.email.subject}</div>
-                    {code.expiresAt && (
-                      <div
-                        className={`vault-expiry ${expiringSoon ? 'expiring-soon' : ''} ${expired ? 'expired' : ''}`}
-                      >
-                        Expires: {formatExpiryDate(code.expiresAt)}
+                return (
+                  <a
+                    key={code.id}
+                    href={code.url || getBrandUrl(code.brand)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`vault-item ${expired ? 'expired' : ''}`}
+                  >
+                    <div className="vault-item-left">
+                      <div className="vault-header-row">
+                        <div className="vault-vendor">{code.brand}</div>
+                        <span
+                          className="category-badge"
+                          style={{ backgroundColor: getCategoryColor(code.category) }}
+                        >
+                          {code.category}
+                        </span>
+                        {expiringSoon && !expired && (
+                          <span className="expire-soon-badge">Expires soon!</span>
+                        )}
+                        {expired && <span className="expired-badge">Expired</span>}
                       </div>
-                    )}
-                  </div>
-                  <div className="vault-item-right">
-                    <div
-                      className="code-display"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        copyToClipboard(code.code);
-                      }}
-                    >
-                      {code.code}
-                      <span className="copy-icon" title="Copy">
-                        📋
-                      </span>
+                      <div className="vault-discount">{code.discountRaw}</div>
+                      <div className="vault-subject">{code.summary || code.email.subject}</div>
+                      {code.expiresAt && (
+                        <div
+                          className={`vault-expiry ${expiringSoon ? 'expiring-soon' : ''} ${expired ? 'expired' : ''}`}
+                        >
+                          Expires: {formatExpiryDate(code.expiresAt)}
+                        </div>
+                      )}
                     </div>
-                  </div>
-                </a>
-              );
-            })}
-          </div>
+                    <div className="vault-item-right">
+                      <div
+                        className="code-display"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          copyToClipboard(code.code);
+                        }}
+                      >
+                        {code.code}
+                        <span className="copy-icon" title="Copy">
+                          📋
+                        </span>
+                      </div>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+            {/* Intersection observer target */}
+            {hasMore && (
+              <div ref={observerTarget} className="loading-trigger" style={{ padding: '2rem', textAlign: 'center' }}>
+                <div className="loading-spinner">
+                  {isLoadingMore ? 'Loading more codes...' : 'Loading...'}
+                </div>
+              </div>
+            )}
+            {!hasMore && codes.length > 0 && (
+              <div className="end-of-list" style={{ padding: '2rem', textAlign: 'center', color: '#9ca3af' }}>
+                <p>No more codes to load</p>
+              </div>
+            )}
+          </>
         )}
       </div>
     </>

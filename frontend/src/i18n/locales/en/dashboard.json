@@ -1,0 +1,31 @@
+{
+  "title": "Dashboard",
+  "subtitle": "Manage your email accounts and scans",
+  "email_accounts": {
+    "title": "Connected Email Accounts",
+    "connect_button": "Connect Gmail Account",
+    "no_accounts": "No email accounts connected",
+    "no_accounts_description": "Connect your Gmail account to start scanning for promotional emails.",
+    "status": {
+      "connected": "Connected",
+      "disconnected": "Disconnected"
+    },
+    "actions": {
+      "disconnect": "Disconnect",
+      "scan": "Scan for Promos"
+    }
+  },
+  "scans": {
+    "title": "Recent Scans",
+    "no_scans": "No scans yet",
+    "no_scans_description": "Start your first scan to find promotional codes.",
+    "status": {
+      "pending": "Pending",
+      "running": "Running",
+      "done": "Done",
+      "failed": "Failed"
+    },
+    "emails_found": "{{count}} emails found",
+    "started_at": "Started at"
+  }
+}

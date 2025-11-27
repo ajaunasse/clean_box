@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import api from '../api/client';
 import './Promos.css';
 
@@ -57,34 +58,57 @@ const getBrandUrl = (brand: string): string => {
   return `https://www.google.com/search?q=${encodeURIComponent(brand)}`;
 };
 
-const CATEGORIES = [
-  'All',
-  'Fashion',
-  'Technology',
-  'Sports & Fitness',
-  'Beauty & Health',
-  'Food & Beverage',
-  'Home & Garden',
-  'Travel',
-  'Entertainment',
-  'Books & Media',
-  'Services',
-  'Other',
-];
+const CATEGORY_KEYS = [
+  'all',
+  'fashion',
+  'technology',
+  'sports_fitness',
+  'beauty_health',
+  'food_beverage',
+  'home_garden',
+  'travel',
+  'entertainment',
+  'books_media',
+  'services',
+  'other',
+] as const;
+
+const ITEMS_PER_PAGE = 12;
 
 export const Promos = () => {
-  const [promos, setPromos] = useState<Promo[]>([]);
+  const { t } = useTranslation('promos');
+  const [allPromos, setAllPromos] = useState<Promo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchBrand, setSearchBrand] = useState<string>('');
   const [showExpired, setShowExpired] = useState<boolean>(false);
+  const [hasMore, setHasMore] = useState(true);
+  const observerTarget = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const loadingRef = useRef(false);
+  const currentPageRef = useRef(1);
 
+  // Fetch promos with current filters
   useEffect(() => {
     const fetchPromos = async () => {
       try {
-        const res = await api.get('/promos');
+        setIsLoading(true);
+        const params: any = {
+          page: 1,
+          limit: ITEMS_PER_PAGE,
+          includeExpired: showExpired,
+        };
+
+        if (selectedCategory !== 'all') {
+          params.category = t(`categories.${selectedCategory}`);
+        }
+
+        const res = await api.get('/promos', { params });
+        const promosData = res.data.data;
+
         // Sort by expiring soon first
-        const sorted = res.data.data.sort((a: Promo, b: Promo) => {
+        const sorted = promosData.sort((a: Promo, b: Promo) => {
           const aExpiringSoon = a.promoCodes.some((pc) => isExpiringSoon(pc.expiresAt));
           const bExpiringSoon = b.promoCodes.some((pc) => isExpiringSoon(pc.expiresAt));
 
@@ -93,7 +117,16 @@ export const Promos = () => {
 
           return new Date(b.sentAt).getTime() - new Date(a.sentAt).getTime();
         });
-        setPromos(sorted);
+
+        setAllPromos(sorted);
+        currentPageRef.current = 1;
+
+        // Lucid paginate returns: { data, meta: { total, per_page, current_page, last_page, first_page, ... } }
+        const meta = res.data.meta;
+        const currentPageNum = meta?.currentPage ?? meta?.current_page ?? 1;
+        const lastPageNum = meta?.lastPage ?? meta?.last_page ?? 1;
+        const hasMorePages = currentPageNum < lastPageNum;
+        setHasMore(hasMorePages);
       } catch (error) {
         console.error('Failed to fetch promos', error);
       } finally {
@@ -102,41 +135,138 @@ export const Promos = () => {
     };
 
     fetchPromos();
-  }, []);
+  }, [selectedCategory, showExpired]);
 
-  // Filter promos based on selected category, brand search, and expiry status
-  const filteredPromos = promos.filter((promo) => {
+  // Filter promos by brand search only (category and expiry are handled by backend)
+  const filteredPromos = allPromos.filter((promo) => {
     const firstCode = promo.promoCodes[0];
 
-    // Category filter
-    const matchesCategory = selectedCategory === 'All' || firstCode?.category === selectedCategory;
-
-    // Brand filter
+    // Brand filter (client-side for instant feedback)
     const matchesBrand =
       searchBrand === '' || firstCode?.brand?.toLowerCase().includes(searchBrand.toLowerCase());
 
-    // Expiry filter - hide expired unless showExpired is true
-    const expired = firstCode && isExpired(firstCode.expiresAt);
-    const matchesExpiryFilter = showExpired || !expired;
-
-    return matchesCategory && matchesBrand && matchesExpiryFilter;
+    return matchesBrand;
   });
 
-  if (isLoading) return <div>Loading promos...</div>;
+  // Infinite scroll - load more from backend
+  const loadMore = async () => {
+    if (loadingRef.current || !hasMore) {
+      return;
+    }
+
+    try {
+      loadingRef.current = true;
+      setIsLoadingMore(true);
+      const nextPage = currentPageRef.current + 1;
+      const params: any = {
+        page: nextPage,
+        limit: ITEMS_PER_PAGE,
+        includeExpired: showExpired,
+      };
+
+      if (selectedCategory !== 'all') {
+        params.category = t(`categories.${selectedCategory}`);
+      }
+
+      const res = await api.get('/promos', { params });
+      const newPromos = res.data.data;
+
+      if (newPromos.length > 0) {
+        // Sort new promos
+        const sorted = newPromos.sort((a: Promo, b: Promo) => {
+          const aExpiringSoon = a.promoCodes.some((pc) => isExpiringSoon(pc.expiresAt));
+          const bExpiringSoon = b.promoCodes.some((pc) => isExpiringSoon(pc.expiresAt));
+
+          if (aExpiringSoon && !bExpiringSoon) return -1;
+          if (!aExpiringSoon && bExpiringSoon) return 1;
+
+          return new Date(b.sentAt).getTime() - new Date(a.sentAt).getTime();
+        });
+
+        setAllPromos((prev) => [...prev, ...sorted]);
+        currentPageRef.current = nextPage;
+
+        const meta = res.data.meta;
+        const currentPageNum = meta?.currentPage ?? meta?.current_page ?? nextPage;
+        const lastPageNum = meta?.lastPage ?? meta?.last_page ?? nextPage;
+        const hasMorePages = currentPageNum < lastPageNum;
+        setHasMore(hasMorePages);
+      } else {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error('Failed to load more promos', error);
+    } finally {
+      loadingRef.current = false;
+      setIsLoadingMore(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!hasMore) {
+      return;
+    }
+
+    let observer: IntersectionObserver | null = null;
+
+    // Wait for next tick to ensure DOM is rendered
+    const timer = setTimeout(() => {
+      const currentTarget = observerTarget.current;
+
+      if (!currentTarget) {
+        return;
+      }
+
+      observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting && !loadingRef.current) {
+              loadMore();
+            }
+          });
+        },
+        {
+          root: null,
+          rootMargin: '200px',
+          threshold: 0
+        }
+      );
+
+      observer.observe(currentTarget);
+
+      // Check if element is already in viewport
+      const rect = currentTarget.getBoundingClientRect();
+      const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+
+      if (isVisible && !loadingRef.current) {
+        loadMore();
+      }
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+      if (observer && observerTarget.current) {
+        observer.unobserve(observerTarget.current);
+        observer.disconnect();
+      }
+    };
+  }, [hasMore]);
+
+  if (isLoading) return <div>{t('loading')}</div>;
 
   return (
-    <div className="promos-container">
+    <div className="promos-container" ref={containerRef}>
       <div className="promos-header">
         <div className="promos-header-left">
-          <h1>Promo Wall</h1>
-          <p>Latest deals from your inbox</p>
+          <h1>{t('title')}</h1>
+          <p>{t('subtitle')}</p>
         </div>
-        {promos.length > 0 && (
+        {allPromos.length > 0 && (
           <div className="promos-header-right">
             <div className="promos-search">
               <input
                 type="text"
-                placeholder="Search by brand..."
+                placeholder={t('search_placeholder')}
                 value={searchBrand}
                 onChange={(e) => setSearchBrand(e.target.value)}
                 className="promos-search-input"
@@ -156,7 +286,7 @@ export const Promos = () => {
                   className="toggle-checkbox"
                 />
                 <span className="toggle-slider"></span>
-                <span className="toggle-text">Show expired</span>
+                <span className="toggle-text">{t('show_expired')}</span>
               </label>
             </div>
           </div>
@@ -164,44 +294,45 @@ export const Promos = () => {
       </div>
 
       {/* Category Filters */}
-      {promos.length > 0 && (
+      {allPromos.length > 0 && (
         <div className="category-filters">
-          {CATEGORIES.map((category) => (
+          {CATEGORY_KEYS.map((categoryKey) => (
             <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`category-filter-btn ${selectedCategory === category ? 'active' : ''}`}
+              key={categoryKey}
+              onClick={() => setSelectedCategory(categoryKey)}
+              className={`category-filter-btn ${selectedCategory === categoryKey ? 'active' : ''}`}
               style={
-                selectedCategory === category
-                  ? category === 'All'
+                selectedCategory === categoryKey
+                  ? categoryKey === 'all'
                     ? { backgroundColor: '#4f46e5', color: 'white', borderColor: 'transparent' }
                     : {
-                        backgroundColor: getCategoryColor(category),
+                        backgroundColor: getCategoryColor(t(`categories.${categoryKey}`)),
                         color: 'white',
                         borderColor: 'transparent',
                       }
                   : {}
               }
             >
-              {category}
+              {t(`categories.${categoryKey}`)}
             </button>
           ))}
         </div>
       )}
 
-      {promos.length === 0 ? (
+      {allPromos.length === 0 ? (
         <div className="empty-state-large">
-          <h3>No promos found yet</h3>
-          <p>Connect your Gmail account and start a scan to see deals here.</p>
+          <h3>{t('empty.title')}</h3>
+          <p>{t('empty.description')}</p>
         </div>
       ) : filteredPromos.length === 0 ? (
         <div className="empty-state-large">
-          <h3>No promos match your filters</h3>
-          <p>Try adjusting your category or brand search.</p>
+          <h3>{t('no_match.title')}</h3>
+          <p>{t('no_match.description')}</p>
         </div>
       ) : (
-        <div className="promos-grid">
-          {filteredPromos.map((promo) => {
+        <>
+          <div className="promos-grid">
+            {filteredPromos.map((promo) => {
             const firstCode = promo.promoCodes[0];
             const expiringSoon = firstCode && isExpiringSoon(firstCode.expiresAt);
             const expired = firstCode && isExpired(firstCode.expiresAt);
@@ -226,9 +357,9 @@ export const Promos = () => {
                       </span>
                     )}
                     {expiringSoon && !expired && (
-                      <span className="expire-soon-badge">Expires soon!</span>
+                      <span className="expire-soon-badge">{t('badges.expires_soon')}</span>
                     )}
-                    {expired && <span className="expired-badge">Expired</span>}
+                    {expired && <span className="expired-badge">{t('badges.expired')}</span>}
                   </div>
                   <span className="promo-date">{new Date(promo.sentAt).toLocaleDateString()}</span>
                 </div>
@@ -253,13 +384,27 @@ export const Promos = () => {
                   <div
                     className={`promo-expiry ${expiringSoon ? 'expiring-soon' : ''} ${expired ? 'expired' : ''}`}
                   >
-                    Expires: {formatExpiryDate(firstCode.expiresAt)}
+                    {t('expires', { date: formatExpiryDate(firstCode.expiresAt) })}
                   </div>
                 )}
               </a>
             );
           })}
-        </div>
+          </div>
+          {/* Intersection observer target */}
+          {hasMore && (
+            <div ref={observerTarget} className="loading-trigger">
+              <div className="loading-spinner">
+                {isLoadingMore ? t('loading_more') : t('loading')}
+              </div>
+            </div>
+          )}
+          {!hasMore && allPromos.length > 0 && (
+            <div className="end-of-list">
+              <p>{t('no_more')}</p>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

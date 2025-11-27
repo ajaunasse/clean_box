@@ -3,6 +3,7 @@ import { BaseModel, column, belongsTo, hasMany, scope } from '@adonisjs/lucid/or
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import EmailAccount from '#models/email_account'
 import PromoCode from '#models/promo_code'
+import Package from '#models/package'
 
 export default class Email extends BaseModel {
   @column({ isPrimary: true })
@@ -46,6 +47,9 @@ export default class Email extends BaseModel {
 
   @hasMany(() => PromoCode)
   declare promoCodes: HasMany<typeof PromoCode>
+
+  @hasMany(() => Package)
+  declare packages: HasMany<typeof Package>
 
   // Query Scopes
   static forUser = scope((query, userId: number) => {

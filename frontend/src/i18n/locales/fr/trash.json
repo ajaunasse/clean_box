@@ -1,0 +1,11 @@
+{
+  "title": "Corbeille",
+  "subtitle": "Emails promotionnels sans codes",
+  "from": "De",
+  "subject": "Sujet",
+  "received": "Reçu",
+  "empty": {
+    "title": "Aucun email dans la corbeille",
+    "description": "Les emails sans codes promo apparaîtront ici."
+  }
+}

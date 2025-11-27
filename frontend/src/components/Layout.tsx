@@ -2,7 +2,9 @@ import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
 import { LayoutDashboard, Tag, Trash2, Package, Shield, Newspaper, Ticket } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import api from '../api/client';
+import { LanguageSwitcher } from './LanguageSwitcher';
 import './Layout.css';
 
 interface Stats {
@@ -15,6 +17,7 @@ export const Layout = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation(['navigation', 'auth']);
   const [stats, setStats] = useState<Stats>({ promos: 0, vault: 0, trash: 0 });
 
   const handleLogout = async () => {
@@ -51,14 +54,15 @@ export const Layout = () => {
           </Link>
         </div>
         <nav className="header-nav">
+          <LanguageSwitcher />
           {user ? (
             <button onClick={handleLogout} className="btn btn-text">
-              Logout
+              {t('auth:logout')}
             </button>
           ) : (
             <>
-              <Link to="/login">Login</Link>
-              <Link to="/register">Register</Link>
+              <Link to="/login">{t('auth:login')}</Link>
+              <Link to="/register">{t('auth:register')}</Link>
             </>
           )}
         </nav>
@@ -72,21 +76,21 @@ export const Layout = () => {
                 className={`sidebar-link ${isActive('/dashboard') ? 'active' : ''}`}
               >
                 <LayoutDashboard size={20} className="sidebar-icon" />
-                <span>Dashboard</span>
+                <span>{t('navigation:dashboard')}</span>
               </Link>
               <Link to="/promos" className={`sidebar-link ${isActive('/promos') ? 'active' : ''}`}>
                 <Tag size={20} className="sidebar-icon" />
-                <span>Promo Wall</span>
+                <span>{t('navigation:promo_wall')}</span>
                 {stats.promos > 0 && <span className="count-badge">{stats.promos}</span>}
               </Link>
               <Link to="/vault" className={`sidebar-link ${isActive('/vault') ? 'active' : ''}`}>
                 <Ticket size={20} className="sidebar-icon" />
-                <span>Promo Codes</span>
+                <span>{t('navigation:vault')}</span>
                 {stats.vault > 0 && <span className="count-badge">{stats.vault}</span>}
               </Link>
               <Link to="/trash" className={`sidebar-link ${isActive('/trash') ? 'active' : ''}`}>
                 <Trash2 size={20} className="sidebar-icon" />
-                <span>Trash</span>
+                <span>{t('navigation:trash')}</span>
                 {stats.trash > 0 && <span className="count-badge">{stats.trash}</span>}
               </Link>
               <Link
@@ -94,8 +98,7 @@ export const Layout = () => {
                 className={`sidebar-link ${isActive('/tracking') ? 'active' : ''}`}
               >
                 <Package size={20} className="sidebar-icon" />
-                <span>Package Tracking</span>
-                <span className="coming-soon-label">Soon</span>
+                <span>{t('navigation:tracking')}</span>
               </Link>
               <Link
                 to="/phishing"

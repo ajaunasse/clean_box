@@ -89,12 +89,19 @@ export default class SimpleQueueService {
         const gmailMessageFetcher = new GmailMessageFetcher(gmailOAuthService)
         const openaiService = new OpenAIService()
         const promoExtractionService = new PromoExtractionService(openaiService)
+        const packageRepository = await import('#repositories/package_repository')
+        const PackageRepository = packageRepository.default
+        const packageRepo = new PackageRepository()
+        const packageExtractionService = await import('#services/package_extraction_service')
+        const PackageExtractionService = packageExtractionService.default
+        const packageExtractor = new PackageExtractionService(openaiService, packageRepo)
         const emailRepository = new EmailRepository()
         const promoCodeRepository = new PromoCodeRepository()
 
         const scanService = new GmailScanServiceV2(
           gmailMessageFetcher,
           promoExtractionService,
+          packageExtractor,
           emailRepository,
           promoCodeRepository
         )

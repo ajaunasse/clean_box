@@ -19,23 +19,48 @@ export default class GmailMessageFetcher {
 
   /**
    * Fetch messages from Gmail for a given account
+   * @param category - Gmail category: 'promotions' or 'updates' (for package tracking)
    */
   async fetchMessages(
     accessToken: string,
     refreshToken: string | null,
-    maxResults: number = 50
-  ): Promise<{ id: string }[]> {
+    maxResults: number = 50,
+    category: 'promotions' | 'updates' = 'promotions'
+  ): Promise<{ id: string; internalDate?: string }[]> {
     const auth = this.gmailOAuthService.getClient(accessToken, refreshToken ?? undefined)
     const gmail = google.gmail({ version: 'v1', auth })
 
     const res = await gmail.users.messages.list({
       userId: 'me',
       maxResults,
-      q: 'category:promotions newer_than:90d',
+      q: `category:${category} newer_than:90d`,
     })
 
     const messages = res.data.messages || []
-    return messages.filter((m): m is { id: string } => !!m.id)
+
+    // Fetch minimal metadata for each message to get internalDate for sorting
+    const messagesWithDates = await Promise.all(
+      messages
+        .filter((m): m is { id: string } => !!m.id)
+        .map(async (m) => {
+          try {
+            const msg = await gmail.users.messages.get({
+              userId: 'me',
+              id: m.id,
+              format: 'minimal',
+            })
+            return {
+              id: m.id,
+              internalDate: msg.data.internalDate || undefined,
+            }
+          } catch (error) {
+            console.error(`Failed to get metadata for message ${m.id}:`, error)
+            return { id: m.id, internalDate: undefined }
+          }
+        })
+    )
+
+    return messagesWithDates
   }
 
   /**
@@ -68,15 +93,41 @@ export default class GmailMessageFetcher {
 
     console.log(`[GMAIL FETCH] Message ${messageId}: sizeEstimate = ${fullMsg.data.sizeEstimate}`)
 
+    // Recursive function to find text/html or text/plain parts
+    const findTextPart = (parts: any[]): string | null => {
+      for (const part of parts) {
+        // Check if this part has the body data directly
+        if (part.body?.data) {
+          if (part.mimeType === 'text/plain' || part.mimeType === 'text/html') {
+            return Buffer.from(part.body.data, 'base64').toString('utf-8')
+          }
+        }
+
+        // Recursively check nested parts (for multipart/alternative, multipart/mixed, etc.)
+        if (part.parts && part.parts.length > 0) {
+          const nested = findTextPart(part.parts)
+          if (nested) return nested
+        }
+      }
+      return null
+    }
+
     let body = ''
     if (payload?.body?.data) {
       body = Buffer.from(payload.body.data, 'base64').toString('utf-8')
     } else if (payload?.parts) {
-      const part =
-        payload.parts.find((p) => p.mimeType === 'text/plain') ||
-        payload.parts.find((p) => p.mimeType === 'text/html')
-      if (part?.body?.data) {
-        body = Buffer.from(part.body.data, 'base64').toString('utf-8')
+      // First try to find text/html (richer content)
+      const htmlPart = findTextPart(payload.parts.filter((p) =>
+        p.mimeType === 'text/html' || p.mimeType?.includes('html') || p.parts
+      ))
+      if (htmlPart) {
+        body = htmlPart
+      } else {
+        // Fallback to text/plain
+        const textPart = findTextPart(payload.parts)
+        if (textPart) {
+          body = textPart
+        }
       }
     }
 

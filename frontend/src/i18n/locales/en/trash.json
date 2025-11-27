@@ -1,0 +1,11 @@
+{
+  "title": "Trash",
+  "subtitle": "Promotional emails without codes",
+  "from": "From",
+  "subject": "Subject",
+  "received": "Received",
+  "empty": {
+    "title": "No trash emails",
+    "description": "Emails without promo codes will appear here."
+  }
+}

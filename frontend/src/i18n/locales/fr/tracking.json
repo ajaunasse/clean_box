@@ -1,0 +1,32 @@
+{
+  "title": "Suivi de Colis",
+  "subtitle": "Suivez toutes vos livraisons en un seul endroit",
+  "search_placeholder": "Rechercher des colis...",
+  "filters": {
+    "all": "Tous les Colis",
+    "in_transit": "En Transit",
+    "delivered": "Livré",
+    "pending": "En Attente"
+  },
+  "status": {
+    "pending": "En attente",
+    "in_transit": "En transit",
+    "out_for_delivery": "En cours de livraison",
+    "delivered": "Livré",
+    "exception": "Exception",
+    "unknown": "Inconnu"
+  },
+  "carrier": "Transporteur",
+  "tracking_number": "N° de suivi",
+  "estimated_delivery": "Livraison Estimée",
+  "last_update": "Dernière Mise à Jour",
+  "track": "Suivre",
+  "empty": {
+    "title": "Aucun colis suivi pour le moment",
+    "description": "Les informations de suivi de colis apparaîtront ici automatiquement depuis vos emails."
+  },
+  "no_match": {
+    "title": "Aucun colis ne correspond à votre recherche",
+    "description": "Essayez d'ajuster votre recherche ou vos filtres."
+  }
+}

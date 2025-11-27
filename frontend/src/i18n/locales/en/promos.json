@@ -1,0 +1,36 @@
+{
+  "title": "Promo Wall",
+  "subtitle": "Latest deals from your inbox",
+  "search_placeholder": "Search by brand...",
+  "show_expired": "Show expired",
+  "categories": {
+    "all": "All",
+    "fashion": "Fashion",
+    "technology": "Technology",
+    "sports_fitness": "Sports & Fitness",
+    "beauty_health": "Beauty & Health",
+    "food_beverage": "Food & Beverage",
+    "home_garden": "Home & Garden",
+    "travel": "Travel",
+    "entertainment": "Entertainment",
+    "books_media": "Books & Media",
+    "services": "Services",
+    "other": "Other"
+  },
+  "badges": {
+    "expires_soon": "Expires soon!",
+    "expired": "Expired"
+  },
+  "expires": "Expires: {{date}}",
+  "loading": "Loading...",
+  "loading_more": "Loading more...",
+  "no_more": "No more promos to load",
+  "empty": {
+    "title": "No promos found yet",
+    "description": "Connect your Gmail account and start a scan to see deals here."
+  },
+  "no_match": {
+    "title": "No promos match your filters",
+    "description": "Try adjusting your category or brand search."
+  }
+}

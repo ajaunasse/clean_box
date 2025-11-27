@@ -10,8 +10,11 @@ import { Trash } from './pages/Trash';
 import { Tracking } from './pages/Tracking';
 import { Phishing } from './pages/Phishing';
 import { Newsletters } from './pages/Newsletters';
+import { useLanguageDetection } from './hooks/useLanguageDetection';
 
 function App() {
+  // Auto-detect and set language based on browser
+  useLanguageDetection();
   return (
     <Routes>
       <Route path="/login" element={<Login />} />

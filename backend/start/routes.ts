@@ -15,6 +15,7 @@ const AuthController = () => import('#controllers/auth_controller')
 const EmailAccountsController = () => import('#controllers/email_accounts_controller')
 const ScansController = () => import('#controllers/scans_controller')
 const PromosController = () => import('#controllers/promos_controller')
+const PackagesController = () => import('#controllers/packages_controller')
 const EmailsController = () => import('#controllers/emails_controller')
 const StatsController = () => import('#controllers/stats_controller')
 
@@ -48,6 +49,14 @@ router
         // Promos
         router.get('promos', [PromosController, 'index']) // Feed
         router.get('promo-codes', [PromosController, 'codes']) // Vault
+
+        // Packages
+        router.get('packages', [PackagesController, 'index']) // All packages
+        router.get('packages/active', [PackagesController, 'active']) // Active packages
+        router.get('packages/delivered', [PackagesController, 'delivered']) // Delivered packages
+        router.get('packages/status/:status', [PackagesController, 'byStatus']) // Filter by status
+        router.get('packages/:id', [PackagesController, 'show']) // Single package details
+        router.put('packages/:id/mark-delivered', [PackagesController, 'markDelivered']) // Mark as delivered
 
         // Emails
         router.get('emails/trash', [EmailsController, 'trash']) // Trash

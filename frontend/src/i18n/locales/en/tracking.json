@@ -1,0 +1,32 @@
+{
+  "title": "Package Tracking",
+  "subtitle": "Track all your deliveries in one place",
+  "search_placeholder": "Search packages...",
+  "filters": {
+    "all": "All Packages",
+    "in_transit": "In Transit",
+    "delivered": "Delivered",
+    "pending": "Pending"
+  },
+  "status": {
+    "pending": "Pending",
+    "in_transit": "In Transit",
+    "out_for_delivery": "Out for Delivery",
+    "delivered": "Delivered",
+    "exception": "Exception",
+    "unknown": "Unknown"
+  },
+  "carrier": "Carrier",
+  "tracking_number": "Tracking #",
+  "estimated_delivery": "Estimated Delivery",
+  "last_update": "Last Update",
+  "track": "Track",
+  "empty": {
+    "title": "No packages tracked yet",
+    "description": "Package tracking information will appear here automatically from your emails."
+  },
+  "no_match": {
+    "title": "No packages match your search",
+    "description": "Try adjusting your search or filters."
+  }
+}

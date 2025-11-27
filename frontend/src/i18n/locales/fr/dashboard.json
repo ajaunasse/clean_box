@@ -1,0 +1,31 @@
+{
+  "title": "Tableau de bord",
+  "subtitle": "Gérez vos comptes email et vos scans",
+  "email_accounts": {
+    "title": "Comptes Email Connectés",
+    "connect_button": "Connecter un compte Gmail",
+    "no_accounts": "Aucun compte email connecté",
+    "no_accounts_description": "Connectez votre compte Gmail pour commencer à scanner vos emails promotionnels.",
+    "status": {
+      "connected": "Connecté",
+      "disconnected": "Déconnecté"
+    },
+    "actions": {
+      "disconnect": "Déconnecter",
+      "scan": "Scanner les promos"
+    }
+  },
+  "scans": {
+    "title": "Scans Récents",
+    "no_scans": "Aucun scan pour le moment",
+    "no_scans_description": "Lancez votre premier scan pour trouver des codes promotionnels.",
+    "status": {
+      "pending": "En attente",
+      "running": "En cours",
+      "done": "Terminé",
+      "failed": "Échoué"
+    },
+    "emails_found": "{{count}} emails trouvés",
+    "started_at": "Démarré le"
+  }
+}

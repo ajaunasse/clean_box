@@ -1,0 +1,36 @@
+{
+  "title": "Mur des Promos",
+  "subtitle": "Dernières offres de votre boîte mail",
+  "search_placeholder": "Rechercher par marque...",
+  "show_expired": "Afficher les expirées",
+  "categories": {
+    "all": "Tout",
+    "fashion": "Mode",
+    "technology": "Technologie",
+    "sports_fitness": "Sport & Fitness",
+    "beauty_health": "Beauté & Santé",
+    "food_beverage": "Alimentation",
+    "home_garden": "Maison & Jardin",
+    "travel": "Voyage",
+    "entertainment": "Divertissement",
+    "books_media": "Livres & Médias",
+    "services": "Services",
+    "other": "Autre"
+  },
+  "badges": {
+    "expires_soon": "Expire bientôt !",
+    "expired": "Expiré"
+  },
+  "expires": "Expire le : {{date}}",
+  "loading": "Chargement...",
+  "loading_more": "Chargement...",
+  "no_more": "Plus de promos à charger",
+  "empty": {
+    "title": "Aucune promo trouvée",
+    "description": "Connectez votre compte Gmail et lancez un scan pour voir les offres ici."
+  },
+  "no_match": {
+    "title": "Aucune promo ne correspond à vos filtres",
+    "description": "Essayez d'ajuster votre catégorie ou recherche de marque."
+  }
+}

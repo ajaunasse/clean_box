@@ -1,0 +1,24 @@
+{
+  "title": "Promo Vault",
+  "subtitle": "All your promo codes organized by vendor",
+  "search_placeholder": "Search vendors...",
+  "total_codes": "{{count}} codes",
+  "total_codes_plural": "{{count}} codes",
+  "copy_code": "Copy Code",
+  "copied": "Copied!",
+  "visit_website": "Visit Website",
+  "expires": "Expires: {{date}}",
+  "no_expiry": "No expiration",
+  "badges": {
+    "expires_soon": "Expires soon!",
+    "expired": "Expired"
+  },
+  "empty": {
+    "title": "No promo codes in your vault yet",
+    "description": "Scan your emails to discover and save promo codes here."
+  },
+  "no_match": {
+    "title": "No vendors match your search",
+    "description": "Try a different search term."
+  }
+}

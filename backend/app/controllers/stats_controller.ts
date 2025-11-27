@@ -10,17 +10,23 @@ export default class StatsController {
   async index({ auth, response }: HttpContext) {
     const user = auth.user!
 
-    // Count emails with promo codes (Promo Wall)
+    // Count emails with promo codes (Promo Wall) - excluding emails with only expired promos
+    const now = DateTime.now()
     const promosCount = await Email.query()
       .apply((scopes) => scopes.forUser(user.id))
-      .apply((scopes) => scopes.withPromoCodes())
+      .whereHas('promoCodes' as any, (promoQuery: any) => {
+        promoQuery.where((q: any) => {
+          q.whereNull('expiresAt').orWhere('expiresAt', '>', now.toSQL())
+        })
+      })
       .count('* as total')
       .first()
 
-    // Count promo codes with actual codes (Vault)
+    // Count promo codes with actual codes (Vault) - excluding expired
     const vaultCount = await PromoCode.query()
       .apply((scopes) => scopes.forUser(user.id))
       .apply((scopes) => scopes.withCode())
+      .apply((scopes) => scopes.active())
       .count('* as total')
       .first()
 

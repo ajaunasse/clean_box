@@ -1,0 +1,181 @@
+{
+  "name": "extract_package_tracking",
+  "strict": true,
+  "schema": {
+    "type": "object",
+    "properties": {
+      "isOrderTracking": {
+        "type": "boolean",
+        "description": "Whether this email contains order or package tracking information"
+      },
+      "trackingNumber": {
+        "type": "string",
+        "description": "Package tracking number (use 'PENDING' if order is confirmed but not yet shipped)"
+      },
+      "orderNumber": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "description": "Order or reference number"
+      },
+      "carrier": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "description": "Standardized carrier name (e.g., 'UPS', 'FedEx', 'USPS', 'DHL', 'Colissimo', 'Chronopost', etc.)"
+      },
+      "carrierRaw": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "description": "Raw carrier name as it appears in the email"
+      },
+      "status": {
+        "type": "string",
+        "description": "Package status",
+        "enum": [
+          "ordered",
+          "processing",
+          "shipped",
+          "in_transit",
+          "out_for_delivery",
+          "delivered",
+          "exception",
+          "cancelled",
+          "unknown"
+        ]
+      },
+      "brand": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "description": "Brand or merchant name"
+      },
+      "items": {
+        "type": [
+          "array",
+          "null"
+        ],
+        "description": "Array of items in the order",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Product name"
+            },
+            "quantity": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "description": "Quantity ordered",
+              "minimum": 0
+            },
+            "variant": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "Product variant (color, size, etc.)"
+            },
+            "price": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "Item price"
+            }
+          },
+          "required": [
+            "name",
+            "quantity",
+            "variant",
+            "price"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "orderDate": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "format": "date",
+        "description": "Order date in ISO 8601 format (YYYY-MM-DD)"
+      },
+      "estimatedDelivery": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "format": "date",
+        "description": "Estimated delivery date in ISO 8601 format (YYYY-MM-DD)"
+      },
+      "currentLocation": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "description": "Current package location"
+      },
+      "destinationCity": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "description": "Destination city"
+      },
+      "destinationState": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "description": "Destination state/region"
+      },
+      "destinationZip": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "description": "Destination postal code"
+      },
+      "trackingUrl": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "description": "URL to track the package"
+      },
+      "confidence": {
+        "type": "number",
+        "description": "Confidence score between 0 and 1",
+        "minimum": 0,
+        "maximum": 1
+      }
+    },
+    "required": [
+      "isOrderTracking",
+      "trackingNumber",
+      "orderNumber",
+      "carrier",
+      "carrierRaw",
+      "status",
+      "brand",
+      "items",
+      "orderDate",
+      "estimatedDelivery",
+      "currentLocation",
+      "destinationCity",
+      "destinationState",
+      "destinationZip",
+      "trackingUrl",
+      "confidence"
+    ],
+    "additionalProperties": false
+  }
+}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import api from '../api/client';
 import './Trash.css';
 
@@ -14,6 +14,7 @@ export const Trash = () => {
   const [emails, setEmails] = useState<TrashEmail[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const isInitialMount = useRef(true);
 
   useEffect(() => {
     const fetchTrash = async () => {
@@ -27,7 +28,11 @@ export const Trash = () => {
       }
     };
 
-    fetchTrash();
+    // Only fetch on initial mount (not on subsequent renders)
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      fetchTrash();
+    }
   }, []);
 
   // Filter emails based on search term
