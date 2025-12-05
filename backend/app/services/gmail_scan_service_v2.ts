@@ -15,7 +15,7 @@ export default class GmailScanServiceV2 {
     protected packageExtractionService: PackageExtractionService,
     protected emailRepository: EmailRepository,
     protected promoCodeRepository: PromoCodeRepository
-  ) { }
+  ) {}
 
   /**
    * Scan recent emails for promotions and package tracking
@@ -141,9 +141,7 @@ export default class GmailScanServiceV2 {
           )
 
           if (!hasPackage) {
-            console.log(
-              `Email ${msg.id} - no promo or package tracking found (saved for records)`
-            )
+            console.log(`Email ${msg.id} - no promo or package tracking found (saved for records)`)
           }
         }
 

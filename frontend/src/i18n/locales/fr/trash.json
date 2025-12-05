@@ -1,11 +1,17 @@
 {
   "title": "Corbeille",
-  "subtitle": "Emails promotionnels sans codes",
+  "subtitle": "Emails sans promotions",
+  "loading": "Chargement de la corbeille...",
+  "search_placeholder": "Rechercher des emails...",
   "from": "De",
   "subject": "Sujet",
-  "received": "Reçu",
+  "no_subject": "(Pas de sujet)",
   "empty": {
     "title": "Aucun email dans la corbeille",
-    "description": "Les emails sans codes promo apparaîtront ici."
+    "description": "Tous vos emails contiennent des promotions !"
+  },
+  "no_match": {
+    "title": "Aucun email ne correspond à votre recherche",
+    "description": "Essayez d'ajuster votre terme de recherche."
   }
 }

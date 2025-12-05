@@ -1,32 +1,77 @@
 {
   "title": "Package Tracking",
   "subtitle": "Track all your deliveries in one place",
-  "search_placeholder": "Search packages...",
+  "loading": "Loading packages...",
+  "stats": {
+    "active": "Active",
+    "delivered": "Delivered",
+    "total": "Total"
+  },
   "filters": {
     "all": "All Packages",
-    "in_transit": "In Transit",
-    "delivered": "Delivered",
-    "pending": "Pending"
+    "active": "Active",
+    "delivered": "Delivered"
   },
   "status": {
-    "pending": "Pending",
+    "ordered": "Ordered",
+    "processing": "Processing",
+    "shipped": "Shipped",
     "in_transit": "In Transit",
     "out_for_delivery": "Out for Delivery",
     "delivered": "Delivered",
     "exception": "Exception",
+    "cancelled": "Cancelled",
     "unknown": "Unknown"
   },
-  "carrier": "Carrier",
-  "tracking_number": "Tracking #",
-  "estimated_delivery": "Estimated Delivery",
-  "last_update": "Last Update",
-  "track": "Track",
-  "empty": {
-    "title": "No packages tracked yet",
-    "description": "Package tracking information will appear here automatically from your emails."
+  "table": {
+    "status": "Status",
+    "brand_item": "Brand / Item",
+    "tracking": "Tracking",
+    "order": "Order #",
+    "location": "Location",
+    "delivery": "Delivery",
+    "carrier": "Carrier",
+    "unknown_brand": "Unknown"
   },
-  "no_match": {
-    "title": "No packages match your search",
-    "description": "Try adjusting your search or filters."
+  "modal": {
+    "package_details": "Package Details",
+    "order_information": "Order Information",
+    "brand": "Brand",
+    "item": "Item",
+    "order_number": "Order Number",
+    "order_date": "Order Date",
+    "tracking_information": "Tracking Information",
+    "tracking_number": "Tracking Number",
+    "carrier": "Carrier",
+    "tracking_link": "Tracking Link",
+    "open_tracking": "Open tracking page",
+    "location_delivery": "Location & Delivery",
+    "current_location": "Current Location",
+    "destination": "Destination",
+    "estimated_delivery": "Estimated Delivery",
+    "delivered_on": "Delivered On",
+    "tracking_timeline": "Tracking Timeline",
+    "loading_events": "Loading events...",
+    "created": "Created",
+    "last_updated": "Last Updated",
+    "mark_delivered": "Mark as Delivered",
+    "tracking_prefix": "Tracking:",
+    "progress": {
+      "ordered": "Ordered",
+      "shipped": "Shipped",
+      "out_for_delivery": "Out for Delivery",
+      "delivered": "Delivered"
+    }
+  },
+  "delivery_modal": {
+    "title": "Mark as Delivered",
+    "description": "Mark package {{trackingNumber}} as delivered?",
+    "delivery_date": "Delivery Date",
+    "cancel": "Cancel",
+    "confirm": "Confirm Delivery"
+  },
+  "empty": {
+    "title": "No packages found",
+    "description": "Your package tracking information will appear here once we detect delivery emails."
   }
 }

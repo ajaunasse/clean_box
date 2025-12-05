@@ -94,7 +94,7 @@ export const Promos = () => {
     const fetchPromos = async () => {
       try {
         setIsLoading(true);
-        const params: any = {
+        const params: Record<string, string | number | boolean> = {
           page: 1,
           limit: ITEMS_PER_PAGE,
           includeExpired: showExpired,
@@ -135,6 +135,7 @@ export const Promos = () => {
     };
 
     fetchPromos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategory, showExpired]);
 
   // Filter promos by brand search only (category and expiry are handled by backend)
@@ -158,7 +159,7 @@ export const Promos = () => {
       loadingRef.current = true;
       setIsLoadingMore(true);
       const nextPage = currentPageRef.current + 1;
-      const params: any = {
+      const params: Record<string, string | number | boolean> = {
         page: nextPage,
         limit: ITEMS_PER_PAGE,
         includeExpired: showExpired,
@@ -208,6 +209,7 @@ export const Promos = () => {
     }
 
     let observer: IntersectionObserver | null = null;
+    let observedElement: HTMLDivElement | null = null;
 
     // Wait for next tick to ensure DOM is rendered
     const timer = setTimeout(() => {
@@ -216,6 +218,8 @@ export const Promos = () => {
       if (!currentTarget) {
         return;
       }
+
+      observedElement = currentTarget;
 
       observer = new IntersectionObserver(
         (entries) => {
@@ -245,11 +249,12 @@ export const Promos = () => {
 
     return () => {
       clearTimeout(timer);
-      if (observer && observerTarget.current) {
-        observer.unobserve(observerTarget.current);
+      if (observer && observedElement) {
+        observer.unobserve(observedElement);
         observer.disconnect();
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasMore]);
 
   if (isLoading) return <div>{t('loading')}</div>;

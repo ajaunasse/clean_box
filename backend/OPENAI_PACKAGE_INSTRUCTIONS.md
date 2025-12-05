@@ -41,6 +41,7 @@ The following types of emails are **NOT** package tracking emails, even if they 
   - Receipts, invoices, payment confirmations with no physical shipment
 
 For ALL these OUT OF SCOPE emails, you MUST return:
+
 - "isOrderTracking": false
 - All other fields MUST be null (or null/empty array as appropriate)
 - "status": "unknown"
@@ -59,6 +60,7 @@ For an email to be considered a package tracking email ("isOrderTracking": true)
 - A shipping or delivery postal address
 
 If NONE of these conditions are met AND the main product is a ticket / food / service / digital good, then:
+
 - "isOrderTracking": false
 - All other fields MUST be null (except "status": "unknown" and "confidence")
 
@@ -67,6 +69,7 @@ If NONE of these conditions are met AND the main product is a ticket / food / se
 ## 1. Input Format
 
 The user message will contain:
+
 - CURRENT DATE: The date when this email is being processed (e.g., "November 21, 2025")
 - CURRENT YEAR: The current year (e.g., "2025")
 - Email Subject
@@ -80,9 +83,9 @@ The user message will contain:
 - Use the CURRENT DATE and CURRENT YEAR provided at the beginning of each message
 - For dates WITH year specified (e.g., "Dec 31, 2025"): use that exact year
 - For dates WITHOUT year (e.g., "delivery by December 5" or "livraison le 05/12"):
-  * First, assume it's for the CURRENT YEAR provided in the message
-  * If that date has already passed (is in the past compared to CURRENT DATE), use NEXT YEAR
-  * Example: If CURRENT DATE is "November 21, 2025" and the email says "delivery by 12/05":
+  - First, assume it's for the CURRENT YEAR provided in the message
+  - If that date has already passed (is in the past compared to CURRENT DATE), use NEXT YEAR
+  - Example: If CURRENT DATE is "November 21, 2025" and the email says "delivery by 12/05":
     - Dec 5, 2025 has not passed yet → use "2025-12-05"
 - For relative dates (e.g., "arrives in 3-5 days"): calculate from the CURRENT DATE provided, use the end of the range
 - If only date is given (no time): use just the date in ISO format (YYYY-MM-DD)
@@ -109,12 +112,13 @@ The user message will contain:
 
 - Extract ALL items from the order **only for physical goods shipments**.
 - Each item should include:
-  * name (required): Product name
-  * quantity: Number of units (if mentioned)
-  * variant: Color, size, or other variants (if mentioned)
-  * price: Item price (if mentioned)
+  - name (required): Product name
+  - quantity: Number of units (if mentioned)
+  - variant: Color, size, or other variants (if mentioned)
+  - price: Item price (if mentioned)
 
 Examples:
+
 - "2x Blue T-Shirt (M) - €29.99"  
   → {"name": "Blue T-Shirt", "quantity": 2, "variant": "M", "price": "€29.99"}
 - "iPhone 15 Pro Max 256GB Space Black"  
@@ -123,6 +127,7 @@ Examples:
   → {"name": "ROCKET 3L BOHEMIA", "quantity": 3, "variant": "Vert", "price": null}
 
 If isOrderTracking is false, then:
+
 - "items" MUST be null.
 
 ---
@@ -131,13 +136,13 @@ If isOrderTracking is false, then:
 
 - Look for carrier names in sender email, body text, or tracking number format.
 - Common tracking number formats:
-  * UPS: "1Z" followed by 16 characters
-  * FedEx: 12–14 digits
-  * USPS: 20–22 digits starting with 9400, 9200, etc.
-  * DHL: 10 digits
-  * Colissimo: "6A" followed by 12 digits
-  * Chronopost: Various formats
-  * Amazon Logistics: "TBA" followed by numbers
+  - UPS: "1Z" followed by 16 characters
+  - FedEx: 12–14 digits
+  - USPS: 20–22 digits starting with 9400, 9200, etc.
+  - DHL: 10 digits
+  - Colissimo: "6A" followed by 12 digits
+  - Chronopost: Various formats
+  - Amazon Logistics: "TBA" followed by numbers
 - If carrier is mentioned but not in the standardized list, use "Other" for carrier and keep the original name in carrierRaw.
 
 ---
@@ -172,6 +177,7 @@ You must classify the delivery type when isOrderTracking is true:
   - Or isOrderTracking is false (out of scope: tickets, Uber Eats, digital products, etc.)
 
 RULE:
+
 - If isOrderTracking is false → deliveryType MUST be null.
 
 ---
@@ -207,3 +213,4 @@ RULE:
   "confidence": 0.95,
   "deliveryType": "home"
 }
+```

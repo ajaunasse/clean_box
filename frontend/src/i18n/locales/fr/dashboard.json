@@ -1,31 +1,71 @@
 {
   "title": "Tableau de bord",
-  "subtitle": "Gérez vos comptes email et vos scans",
-  "email_accounts": {
-    "title": "Comptes Email Connectés",
-    "connect_button": "Connecter un compte Gmail",
-    "no_accounts": "Aucun compte email connecté",
-    "no_accounts_description": "Connectez votre compte Gmail pour commencer à scanner vos emails promotionnels.",
-    "status": {
-      "connected": "Connecté",
-      "disconnected": "Déconnecté"
+  "loading": "Chargement du tableau de bord...",
+  "stats": {
+    "active_promo_codes": "Codes Promo Actifs",
+    "of_total": "sur {{total}} au total",
+    "this_month": "+{{count}} ce mois-ci",
+    "total_savings": "Économies Totales",
+    "estimated_value": "valeur estimée",
+    "money_saved": "💰 Argent économisé",
+    "emails_scanned": "Emails Analysés",
+    "promotional_emails": "emails promotionnels",
+    "storage_saved": "Espace Libéré",
+    "inbox_cleaned": "boîte nettoyée",
+    "auto_delete_badge": "⚡ Suppression auto",
+    "scan_activity": "Activité de Scan",
+    "running": "En cours...",
+    "idle": "Inactif",
+    "last_scan": "Dernier : {{date}}",
+    "no_scans_yet": "Aucun scan",
+    "quick_scan": "Scan Rapide",
+    "expiring_soon": "Bientôt Expirés",
+    "codes_expire": "codes expirent dans 7 jours",
+    "use_now": "⚠️ Utilisez-les maintenant !"
+  },
+  "accounts": {
+    "title": "Comptes Connectés",
+    "connect_button": "+ Connecter un Compte Email",
+    "no_accounts": "Aucun compte connecté.",
+    "provider": "Gmail",
+    "settings": {
+      "auto_delete": "🗑️ Suppression auto après scan",
+      "auto_delete_desc": "Déplacer les emails vers la corbeille après le scan",
+      "auto_scan": "🤖 Scan automatique toutes les heures",
+      "auto_scan_desc": "Analyser automatiquement les nouveaux emails"
     },
     "actions": {
-      "disconnect": "Déconnecter",
-      "scan": "Scanner les promos"
+      "scan_now": "Scanner Maintenant",
+      "disconnect_confirm": "Êtes-vous sûr de vouloir déconnecter ce compte ?"
     }
   },
   "scans": {
     "title": "Scans Récents",
-    "no_scans": "Aucun scan pour le moment",
-    "no_scans_description": "Lancez votre premier scan pour trouver des codes promotionnels.",
-    "status": {
-      "pending": "En attente",
-      "running": "En cours",
-      "done": "Terminé",
-      "failed": "Échoué"
-    },
-    "emails_found": "{{count}} emails trouvés",
-    "started_at": "Démarré le"
+    "no_scans": "Aucun scan effectué.",
+    "id": "ID",
+    "status": "Statut",
+    "emails_scanned": "Emails Analysés",
+    "date": "Date"
+  },
+  "modals": {
+    "provider_title": "Connecter un Compte Email",
+    "provider_description": "Choisissez votre fournisseur d'email pour commencer à scanner les codes promo",
+    "available": "Disponible",
+    "coming_soon": "Bientôt Disponible",
+    "cancel": "Annuler",
+    "auto_delete_title": "⚠️ Activer la Suppression Auto ?",
+    "auto_delete_description": "Les emails scannés seront déplacés vers votre corbeille Gmail après chaque scan.",
+    "auto_delete_details": "✅ Ce que nous ferons :",
+    "auto_delete_point1": "Tous les codes promo sont sauvegardés dans CleanBox (Mur Promo ou Coffre)",
+    "auto_delete_point2": "Les emails dans la corbeille restent 30 jours avant suppression définitive",
+    "auto_delete_point3": "Vous pouvez restaurer les emails depuis la corbeille Gmail à tout moment",
+    "enable_auto_delete": "Activer la Suppression Auto"
+  },
+  "toast": {
+    "coming_soon": "Ce fournisseur arrive bientôt !",
+    "scan_started": "Scan démarré ! Il s'exécutera en arrière-plan.",
+    "scan_failed": "Échec du démarrage du scan. Veuillez réessayer.",
+    "settings_updated": "Paramètres mis à jour avec succès",
+    "settings_failed": "Échec de la mise à jour des paramètres. Veuillez réessayer."
   }
 }

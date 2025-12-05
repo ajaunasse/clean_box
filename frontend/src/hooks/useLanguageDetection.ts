@@ -23,7 +23,7 @@ export const useLanguageDetection = () => {
       }
 
       // Get browser language
-      const browserLang = navigator.language || (navigator as any).userLanguage;
+      const browserLang = navigator.language || (navigator as { userLanguage?: string }).userLanguage || 'en';
 
       // Simple rule: fr* -> French, everything else -> English
       const detectedLanguage = browserLang.toLowerCase().startsWith('fr') ? 'fr' : 'en';

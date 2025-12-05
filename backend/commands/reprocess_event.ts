@@ -16,9 +16,9 @@ export default class ReprocessEvent extends BaseCommand {
   declare emailId: string
 
   async run() {
-    const emailIdNum = parseInt(this.emailId, 10)
+    const emailIdNum = Number.parseInt(this.emailId, 10)
 
-    if (isNaN(emailIdNum)) {
+    if (Number.isNaN(emailIdNum)) {
       this.logger.error('Invalid email ID')
       return
     }

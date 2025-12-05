@@ -14,6 +14,12 @@
     "typecheck": "tsc --noEmit",
     "prepare": "husky"
   },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
   "imports": {
     "#controllers/*": "./app/controllers/*.js",
     "#exceptions/*": "./app/exceptions/*.js",

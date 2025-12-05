@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import api from '../api/client';
 import {
   ScanLine,
@@ -42,6 +43,7 @@ interface DashboardStats {
 }
 
 export const Dashboard = () => {
+  const { t } = useTranslation('dashboard');
   const [accounts, setAccounts] = useState<EmailAccount[]>([]);
   const [jobs, setJobs] = useState<ScanJob[]>([]);
   const [stats, setStats] = useState<DashboardStats>({
@@ -100,7 +102,7 @@ export const Dashboard = () => {
 
   const handleConnect = async (provider: string) => {
     if (provider !== 'gmail') {
-      setToast({ message: 'This provider is coming soon!', type: 'info' });
+      setToast({ message: t('toast.coming_soon'), type: 'info' });
       return;
     }
 
@@ -113,7 +115,7 @@ export const Dashboard = () => {
   };
 
   const handleDisconnect = async (id: number) => {
-    if (!confirm('Are you sure you want to disconnect this account?')) return;
+    if (!confirm(t('accounts.actions.disconnect_confirm'))) return;
     try {
       await api.delete(`/email-accounts/${id}`);
       fetchData();
@@ -126,10 +128,10 @@ export const Dashboard = () => {
     try {
       await api.post('/scans', { emailAccountId: accountId });
       fetchData();
-      setToast({ message: 'Scan started! It will run in the background.', type: 'info' });
+      setToast({ message: t('toast.scan_started'), type: 'info' });
     } catch (error) {
       console.error('Failed to start scan', error);
-      setToast({ message: 'Failed to start scan. Please try again.', type: 'error' });
+      setToast({ message: t('toast.scan_failed'), type: 'error' });
     }
   };
 
@@ -161,14 +163,14 @@ export const Dashboard = () => {
     try {
       await api.patch(`/email-accounts/${accountId}/settings`, settings);
       fetchData();
-      setToast({ message: 'Settings updated successfully', type: 'success' });
+      setToast({ message: t('toast.settings_updated'), type: 'success' });
     } catch (error) {
       console.error('Failed to update settings', error);
-      setToast({ message: 'Failed to update settings. Please try again.', type: 'error' });
+      setToast({ message: t('toast.settings_failed'), type: 'error' });
     }
   };
 
-  if (isLoading) return <div>Loading dashboard...</div>;
+  if (isLoading) return <div>{t('loading')}</div>;
 
   return (
     <>
@@ -177,9 +179,9 @@ export const Dashboard = () => {
       {showProviderModal && (
         <div className="modal-overlay" onClick={() => setShowProviderModal(false)}>
           <div className="modal-content provider-modal" onClick={(e) => e.stopPropagation()}>
-            <h2>Connect Email Account</h2>
+            <h2>{t('modals.provider_title')}</h2>
             <p className="modal-description">
-              Choose your email provider to start scanning for promo codes
+              {t('modals.provider_description')}
             </p>
 
             <div className="provider-grid">
@@ -200,7 +202,7 @@ export const Dashboard = () => {
                   <h3>Gmail</h3>
                   <p>Google Workspace</p>
                 </div>
-                <div className="provider-badge">Available</div>
+                <div className="provider-badge">{t('modals.available')}</div>
               </button>
 
               <button className="provider-card disabled" disabled>
@@ -213,7 +215,7 @@ export const Dashboard = () => {
                   <h3>Outlook</h3>
                   <p>Microsoft 365</p>
                 </div>
-                <div className="provider-badge coming-soon">Coming Soon</div>
+                <div className="provider-badge coming-soon">{t('modals.coming_soon')}</div>
               </button>
 
               <button className="provider-card disabled" disabled>
@@ -226,7 +228,7 @@ export const Dashboard = () => {
                   <h3>Yahoo Mail</h3>
                   <p>Yahoo</p>
                 </div>
-                <div className="provider-badge coming-soon">Coming Soon</div>
+                <div className="provider-badge coming-soon">{t('modals.coming_soon')}</div>
               </button>
 
               <button className="provider-card disabled" disabled>
@@ -239,13 +241,13 @@ export const Dashboard = () => {
                   <h3>iCloud Mail</h3>
                   <p>Apple</p>
                 </div>
-                <div className="provider-badge coming-soon">Coming Soon</div>
+                <div className="provider-badge coming-soon">{t('modals.coming_soon')}</div>
               </button>
             </div>
 
             <div className="modal-actions">
               <button onClick={() => setShowProviderModal(false)} className="btn btn-secondary">
-                Cancel
+                {t('modals.cancel')}
               </button>
             </div>
           </div>
@@ -255,26 +257,26 @@ export const Dashboard = () => {
       {showConfirmDialog && (
         <div className="modal-overlay" onClick={() => setShowConfirmDialog(null)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h2>⚠️ Enable Auto-Delete?</h2>
-            <p>Scanned emails will be moved to your Gmail Trash after each scan.</p>
+            <h2>{t('modals.auto_delete_title')}</h2>
+            <p>{t('modals.auto_delete_description')}</p>
 
             <div className="confirm-details">
               <p>
-                <strong>✅ What we'll do:</strong>
+                <strong>{t('modals.auto_delete_details')}</strong>
               </p>
               <ul>
-                <li>All promo codes are saved in CleanBox (Promo Wall or Vault)</li>
-                <li>Emails in Trash stay for 30 days before permanent deletion</li>
-                <li>You can restore emails from Gmail Trash anytime</li>
+                <li>{t('modals.auto_delete_point1')}</li>
+                <li>{t('modals.auto_delete_point2')}</li>
+                <li>{t('modals.auto_delete_point3')}</li>
               </ul>
             </div>
 
             <div className="modal-actions">
               <button onClick={() => setShowConfirmDialog(null)} className="btn btn-secondary">
-                Cancel
+                {t('modals.cancel')}
               </button>
               <button onClick={confirmAutoDelete} className="btn btn-primary">
-                Enable Auto-Delete
+                {t('modals.enable_auto_delete')}
               </button>
             </div>
           </div>
@@ -283,7 +285,7 @@ export const Dashboard = () => {
 
       <div className="dashboard-container">
         <div className="dashboard-header">
-          <h1>Dashboard</h1>
+          <h1>{t('title')}</h1>
         </div>
 
         {/* KPI Stats Grid */}
@@ -293,13 +295,13 @@ export const Dashboard = () => {
               <Ticket size={24} />
             </div>
             <div className="stat-content">
-              <p className="stat-label">Active Promo Codes</p>
+              <p className="stat-label">{t('stats.active_promo_codes')}</p>
               <p className="stat-value">{stats.activePromoCodes}</p>
-              <p className="stat-sublabel">of {stats.totalPromoCodes} total</p>
+              <p className="stat-sublabel">{t('stats.of_total', { total: stats.totalPromoCodes })}</p>
             </div>
             <div className="stat-trend stat-trend-up">
               <TrendingUp size={16} />
-              <span>+{stats.thisMonthCodes} this month</span>
+              <span>{t('stats.this_month', { count: stats.thisMonthCodes })}</span>
             </div>
           </div>
 
@@ -308,11 +310,11 @@ export const Dashboard = () => {
               <Target size={24} />
             </div>
             <div className="stat-content">
-              <p className="stat-label">Total Savings</p>
+              <p className="stat-label">{t('stats.total_savings')}</p>
               <p className="stat-value">${stats.totalSavings.toLocaleString()}</p>
-              <p className="stat-sublabel">estimated value</p>
+              <p className="stat-sublabel">{t('stats.estimated_value')}</p>
             </div>
-            <div className="stat-badge">💰 Money Saved</div>
+            <div className="stat-badge">{t('stats.money_saved')}</div>
           </div>
 
           <div className="stat-card stat-card-info">
@@ -320,9 +322,9 @@ export const Dashboard = () => {
               <Mail size={24} />
             </div>
             <div className="stat-content">
-              <p className="stat-label">Emails Scanned</p>
+              <p className="stat-label">{t('stats.emails_scanned')}</p>
               <p className="stat-value">{stats.emailsScanned.toLocaleString()}</p>
-              <p className="stat-sublabel">promotional emails</p>
+              <p className="stat-sublabel">{t('stats.promotional_emails')}</p>
             </div>
             <div className="stat-progress">
               <div className="stat-progress-bar" style={{ width: '75%' }}></div>
@@ -334,11 +336,11 @@ export const Dashboard = () => {
               <Database size={24} />
             </div>
             <div className="stat-content">
-              <p className="stat-label">Storage Saved</p>
+              <p className="stat-label">{t('stats.storage_saved')}</p>
               <p className="stat-value">{stats.storageSaved} MB</p>
-              <p className="stat-sublabel">inbox cleaned</p>
+              <p className="stat-sublabel">{t('stats.inbox_cleaned')}</p>
             </div>
-            <div className="stat-badge">⚡ Auto-delete</div>
+            <div className="stat-badge">{t('stats.auto_delete_badge')}</div>
           </div>
 
           <div className="stat-card stat-card-secondary">
@@ -346,18 +348,18 @@ export const Dashboard = () => {
               <Activity size={24} />
             </div>
             <div className="stat-content">
-              <p className="stat-label">Scan Activity</p>
+              <p className="stat-label">{t('stats.scan_activity')}</p>
               <p className="stat-value">
                 {jobs.find((j) => j.status === 'IN_PROGRESS') ? (
-                  <span className="status-running">Running...</span>
+                  <span className="status-running">{t('stats.running')}</span>
                 ) : (
-                  'Idle'
+                  t('stats.idle')
                 )}
               </p>
               <p className="stat-sublabel">
                 {jobs.length > 0
-                  ? `Last: ${new Date(jobs[0]?.createdAt).toLocaleDateString()}`
-                  : 'No scans yet'}
+                  ? t('stats.last_scan', { date: new Date(jobs[0]?.createdAt).toLocaleDateString() })
+                  : t('stats.no_scans_yet')}
               </p>
             </div>
             <button
@@ -365,7 +367,7 @@ export const Dashboard = () => {
               className="stat-action-btn"
             >
               <Zap size={16} />
-              Quick Scan
+              {t('stats.quick_scan')}
             </button>
           </div>
 
@@ -374,23 +376,23 @@ export const Dashboard = () => {
               <Calendar size={24} />
             </div>
             <div className="stat-content">
-              <p className="stat-label">Expiring Soon</p>
+              <p className="stat-label">{t('stats.expiring_soon')}</p>
               <p className="stat-value">{stats.expiringSoon}</p>
-              <p className="stat-sublabel">codes expire in 7 days</p>
+              <p className="stat-sublabel">{t('stats.codes_expire')}</p>
             </div>
-            {stats.expiringSoon > 0 && <div className="stat-alert">⚠️ Use them now!</div>}
+            {stats.expiringSoon > 0 && <div className="stat-alert">{t('stats.use_now')}</div>}
           </div>
         </section>
 
         <section className="dashboard-section">
           <div className="section-header">
-            <h2>Connected Accounts</h2>
+            <h2>{t('accounts.title')}</h2>
             <button onClick={() => setShowProviderModal(true)} className="btn btn-primary">
-              + Connect Email Account
+              {t('accounts.connect_button')}
             </button>
           </div>
           {accounts.length === 0 ? (
-            <p className="empty-state">No accounts connected yet.</p>
+            <p className="empty-state">{t('accounts.no_accounts')}</p>
           ) : (
             <div className="accounts-grid">
               {accounts.map((account) => (
@@ -403,7 +405,7 @@ export const Dashboard = () => {
                       />
                     </div>
                     <div className="account-info">
-                      <span className="account-provider">Gmail</span>
+                      <span className="account-provider">{t('accounts.provider')}</span>
                       <span className="account-id">ID: {account.googleUserId}</span>
                       {account.email && <span className="account-email">{account.email}</span>}
                     </div>
@@ -412,9 +414,9 @@ export const Dashboard = () => {
                   <div className="account-settings">
                     <div className="setting-item">
                       <div className="setting-info">
-                        <span className="setting-label">🗑️ Auto-delete after scan</span>
+                        <span className="setting-label">{t('accounts.settings.auto_delete')}</span>
                         <span className="setting-description">
-                          Move emails to trash after scanning
+                          {t('accounts.settings.auto_delete_desc')}
                         </span>
                       </div>
                       <label className="toggle-switch">
@@ -431,9 +433,9 @@ export const Dashboard = () => {
 
                     <div className="setting-item">
                       <div className="setting-info">
-                        <span className="setting-label">🤖 Auto-scan hourly</span>
+                        <span className="setting-label">{t('accounts.settings.auto_scan')}</span>
                         <span className="setting-description">
-                          Automatically scan for new emails
+                          {t('accounts.settings.auto_scan_desc')}
                         </span>
                       </div>
                       <label className="toggle-switch">
@@ -450,7 +452,7 @@ export const Dashboard = () => {
                   <div className="account-actions">
                     <button onClick={() => handleScan(account.id)} className="btn btn-scan">
                       <ScanLine size={16} />
-                      Scan Now
+                      {t('accounts.actions.scan_now')}
                     </button>
                     <button
                       onClick={() => handleDisconnect(account.id)}
@@ -466,17 +468,17 @@ export const Dashboard = () => {
         </section>
 
         <section className="dashboard-section">
-          <h2>Recent Scans</h2>
+          <h2>{t('scans.title')}</h2>
           {jobs.length === 0 ? (
-            <p className="empty-state">No scans performed yet.</p>
+            <p className="empty-state">{t('scans.no_scans')}</p>
           ) : (
             <table className="jobs-table">
               <thead>
                 <tr>
-                  <th>ID</th>
-                  <th>Status</th>
-                  <th>Emails Scanned</th>
-                  <th>Date</th>
+                  <th>{t('scans.id')}</th>
+                  <th>{t('scans.status')}</th>
+                  <th>{t('scans.emails_scanned')}</th>
+                  <th>{t('scans.date')}</th>
                 </tr>
               </thead>
               <tbody>

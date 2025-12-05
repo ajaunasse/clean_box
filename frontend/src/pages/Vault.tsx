@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import api from '../api/client';
 import { Toast } from '../components/Toast';
 import './Vault.css';
@@ -76,6 +77,7 @@ const CATEGORIES = [
 const ITEMS_PER_PAGE = 20;
 
 export const Vault = () => {
+  const { t } = useTranslation('vault');
   const [codes, setCodes] = useState<PromoCode[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -137,7 +139,7 @@ export const Vault = () => {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    setToast({ message: 'Code copied to clipboard!', type: 'success' });
+    setToast({ message: t('toast.copied'), type: 'success' });
   };
 
   // Infinite scroll - load more from backend
@@ -229,7 +231,7 @@ export const Vault = () => {
     return matchesCategory && matchesBrand && matchesExpiryFilter;
   });
 
-  if (isLoading) return <div>Loading vault...</div>;
+  if (isLoading) return <div>{t('loading')}</div>;
 
   return (
     <>
@@ -237,15 +239,15 @@ export const Vault = () => {
       <div className="vault-container">
         <div className="vault-header">
           <div className="vault-header-left">
-            <h1>Promo Vault</h1>
-            <p>Your collection of active codes</p>
+            <h1>{t('title')}</h1>
+            <p>{t('subtitle')}</p>
           </div>
           {codes.length > 0 && (
             <div className="vault-header-right">
               <div className="vault-search">
                 <input
                   type="text"
-                  placeholder="Search by brand..."
+                  placeholder={t('search_placeholder')}
                   value={searchBrand}
                   onChange={(e) => setSearchBrand(e.target.value)}
                   className="vault-search-input"
@@ -265,7 +267,7 @@ export const Vault = () => {
                     className="toggle-checkbox"
                   />
                   <span className="toggle-slider"></span>
-                  <span className="toggle-text">Show expired</span>
+                  <span className="toggle-text">{t('show_expired')}</span>
                 </label>
               </div>
             </div>
@@ -292,7 +294,7 @@ export const Vault = () => {
                     : {}
                 }
               >
-                {category}
+                {t(`categories.${category.toLowerCase().replace(/ & /g, '').replace(/ /g, '_')}`)}
               </button>
             ))}
           </div>
@@ -300,13 +302,13 @@ export const Vault = () => {
 
         {codes.length === 0 ? (
           <div className="empty-state-large">
-            <h3>No codes in vault yet</h3>
-            <p>Your saved promo codes will appear here.</p>
+            <h3>{t('empty.title')}</h3>
+            <p>{t('empty.description')}</p>
           </div>
         ) : filteredCodes.length === 0 ? (
           <div className="empty-state-large">
-            <h3>No codes match your filters</h3>
-            <p>Try adjusting your category or brand search.</p>
+            <h3>{t('no_match.title')}</h3>
+            <p>{t('no_match.description')}</p>
           </div>
         ) : (
           <>
@@ -333,9 +335,9 @@ export const Vault = () => {
                           {code.category}
                         </span>
                         {expiringSoon && !expired && (
-                          <span className="expire-soon-badge">Expires soon!</span>
+                          <span className="expire-soon-badge">{t('badges.expires_soon')}</span>
                         )}
-                        {expired && <span className="expired-badge">Expired</span>}
+                        {expired && <span className="expired-badge">{t('badges.expired')}</span>}
                       </div>
                       <div className="vault-discount">{code.discountRaw}</div>
                       <div className="vault-subject">{code.summary || code.email.subject}</div>
@@ -343,7 +345,7 @@ export const Vault = () => {
                         <div
                           className={`vault-expiry ${expiringSoon ? 'expiring-soon' : ''} ${expired ? 'expired' : ''}`}
                         >
-                          Expires: {formatExpiryDate(code.expiresAt)}
+                          {t('expires', { date: formatExpiryDate(code.expiresAt) })}
                         </div>
                       )}
                     </div>
@@ -369,13 +371,13 @@ export const Vault = () => {
             {hasMore && (
               <div ref={observerTarget} className="loading-trigger" style={{ padding: '2rem', textAlign: 'center' }}>
                 <div className="loading-spinner">
-                  {isLoadingMore ? 'Loading more codes...' : 'Loading...'}
+                  {isLoadingMore ? t('loading_more') : t('loading')}
                 </div>
               </div>
             )}
             {!hasMore && codes.length > 0 && (
               <div className="end-of-list" style={{ padding: '2rem', textAlign: 'center', color: '#9ca3af' }}>
-                <p>No more codes to load</p>
+                <p>{t('no_more')}</p>
               </div>
             )}
           </>

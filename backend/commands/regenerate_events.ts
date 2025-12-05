@@ -16,9 +16,9 @@ export default class RegenerateEvents extends BaseCommand {
   declare emailAccountId: string
 
   async run() {
-    const emailAccountIdNum = parseInt(this.emailAccountId, 10)
+    const emailAccountIdNum = Number.parseInt(this.emailAccountId, 10)
 
-    if (isNaN(emailAccountIdNum)) {
+    if (Number.isNaN(emailAccountIdNum)) {
       this.logger.error('Invalid email account ID')
       return
     }

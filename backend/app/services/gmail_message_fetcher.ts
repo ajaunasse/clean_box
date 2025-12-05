@@ -117,9 +117,11 @@ export default class GmailMessageFetcher {
       body = Buffer.from(payload.body.data, 'base64').toString('utf-8')
     } else if (payload?.parts) {
       // First try to find text/html (richer content)
-      const htmlPart = findTextPart(payload.parts.filter((p) =>
-        p.mimeType === 'text/html' || p.mimeType?.includes('html') || p.parts
-      ))
+      const htmlPart = findTextPart(
+        payload.parts.filter(
+          (p) => p.mimeType === 'text/html' || p.mimeType?.includes('html') || p.parts
+        )
+      )
       if (htmlPart) {
         body = htmlPart
       } else {

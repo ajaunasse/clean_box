@@ -1,31 +1,71 @@
 {
   "title": "Dashboard",
-  "subtitle": "Manage your email accounts and scans",
-  "email_accounts": {
-    "title": "Connected Email Accounts",
-    "connect_button": "Connect Gmail Account",
-    "no_accounts": "No email accounts connected",
-    "no_accounts_description": "Connect your Gmail account to start scanning for promotional emails.",
-    "status": {
-      "connected": "Connected",
-      "disconnected": "Disconnected"
+  "loading": "Loading dashboard...",
+  "stats": {
+    "active_promo_codes": "Active Promo Codes",
+    "of_total": "of {{total}} total",
+    "this_month": "+{{count}} this month",
+    "total_savings": "Total Savings",
+    "estimated_value": "estimated value",
+    "money_saved": "💰 Money Saved",
+    "emails_scanned": "Emails Scanned",
+    "promotional_emails": "promotional emails",
+    "storage_saved": "Storage Saved",
+    "inbox_cleaned": "inbox cleaned",
+    "auto_delete_badge": "⚡ Auto-delete",
+    "scan_activity": "Scan Activity",
+    "running": "Running...",
+    "idle": "Idle",
+    "last_scan": "Last: {{date}}",
+    "no_scans_yet": "No scans yet",
+    "quick_scan": "Quick Scan",
+    "expiring_soon": "Expiring Soon",
+    "codes_expire": "codes expire in 7 days",
+    "use_now": "⚠️ Use them now!"
+  },
+  "accounts": {
+    "title": "Connected Accounts",
+    "connect_button": "+ Connect Email Account",
+    "no_accounts": "No accounts connected yet.",
+    "provider": "Gmail",
+    "settings": {
+      "auto_delete": "🗑️ Auto-delete after scan",
+      "auto_delete_desc": "Move emails to trash after scanning",
+      "auto_scan": "🤖 Auto-scan hourly",
+      "auto_scan_desc": "Automatically scan for new emails"
     },
     "actions": {
-      "disconnect": "Disconnect",
-      "scan": "Scan for Promos"
+      "scan_now": "Scan Now",
+      "disconnect_confirm": "Are you sure you want to disconnect this account?"
     }
   },
   "scans": {
     "title": "Recent Scans",
-    "no_scans": "No scans yet",
-    "no_scans_description": "Start your first scan to find promotional codes.",
-    "status": {
-      "pending": "Pending",
-      "running": "Running",
-      "done": "Done",
-      "failed": "Failed"
-    },
-    "emails_found": "{{count}} emails found",
-    "started_at": "Started at"
+    "no_scans": "No scans performed yet.",
+    "id": "ID",
+    "status": "Status",
+    "emails_scanned": "Emails Scanned",
+    "date": "Date"
+  },
+  "modals": {
+    "provider_title": "Connect Email Account",
+    "provider_description": "Choose your email provider to start scanning for promo codes",
+    "available": "Available",
+    "coming_soon": "Coming Soon",
+    "cancel": "Cancel",
+    "auto_delete_title": "⚠️ Enable Auto-Delete?",
+    "auto_delete_description": "Scanned emails will be moved to your Gmail Trash after each scan.",
+    "auto_delete_details": "✅ What we'll do:",
+    "auto_delete_point1": "All promo codes are saved in CleanBox (Promo Wall or Vault)",
+    "auto_delete_point2": "Emails in Trash stay for 30 days before permanent deletion",
+    "auto_delete_point3": "You can restore emails from Gmail Trash anytime",
+    "enable_auto_delete": "Enable Auto-Delete"
+  },
+  "toast": {
+    "coming_soon": "This provider is coming soon!",
+    "scan_started": "Scan started! It will run in the background.",
+    "scan_failed": "Failed to start scan. Please try again.",
+    "settings_updated": "Settings updated successfully",
+    "settings_failed": "Failed to update settings. Please try again."
   }
 }

@@ -1,24 +1,36 @@
 {
   "title": "Promo Vault",
-  "subtitle": "All your promo codes organized by vendor",
-  "search_placeholder": "Search vendors...",
-  "total_codes": "{{count}} codes",
-  "total_codes_plural": "{{count}} codes",
-  "copy_code": "Copy Code",
-  "copied": "Copied!",
-  "visit_website": "Visit Website",
+  "subtitle": "Your collection of active codes",
+  "loading": "Loading vault...",
+  "search_placeholder": "Search by brand...",
+  "show_expired": "Show expired",
+  "categories": {
+    "all": "All",
+    "fashion": "Fashion",
+    "technology": "Technology",
+    "sports": "Sports & Fitness",
+    "beauty": "Beauty & Health",
+    "food": "Food & Beverage",
+    "home": "Home & Garden",
+    "travel": "Travel",
+    "entertainment": "Entertainment",
+    "books": "Books & Media",
+    "services": "Services",
+    "other": "Other"
+  },
   "expires": "Expires: {{date}}",
-  "no_expiry": "No expiration",
   "badges": {
     "expires_soon": "Expires soon!",
     "expired": "Expired"
   },
   "empty": {
-    "title": "No promo codes in your vault yet",
-    "description": "Scan your emails to discover and save promo codes here."
+    "title": "No codes in vault yet",
+    "description": "Your saved promo codes will appear here."
   },
   "no_match": {
-    "title": "No vendors match your search",
-    "description": "Try a different search term."
-  }
+    "title": "No codes match your filters",
+    "description": "Try adjusting your category or brand search."
+  },
+  "loading_more": "Loading more codes...",
+  "no_more": "No more codes to load"
 }

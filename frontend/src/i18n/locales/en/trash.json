@@ -1,11 +1,17 @@
 {
   "title": "Trash",
-  "subtitle": "Promotional emails without codes",
+  "subtitle": "Emails without promotions",
+  "loading": "Loading trash...",
+  "search_placeholder": "Search emails...",
   "from": "From",
   "subject": "Subject",
-  "received": "Received",
+  "no_subject": "(No subject)",
   "empty": {
-    "title": "No trash emails",
-    "description": "Emails without promo codes will appear here."
+    "title": "No emails in trash",
+    "description": "All your emails contain promotions!"
+  },
+  "no_match": {
+    "title": "No emails match your search",
+    "description": "Try adjusting your search term."
   }
 }

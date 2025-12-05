@@ -108,9 +108,7 @@ export default class PackageExtractionService {
 
       // Use items if available
       const items = packageDetails.items
-      const itemName = items
-        ? this.truncateItemName(this.generateItemNameFromItems(items))
-        : null
+      const itemName = items ? this.truncateItemName(this.generateItemNameFromItems(items)) : null
 
       const eventData = {
         packageId: existingEvent?.packageId || null, // Keep existing packageId if exists
@@ -219,7 +217,13 @@ export default class PackageExtractionService {
         let destinationState: string | null = null
         let destinationZip: string | null = null
         let actualDelivery: DateTime | null = null
-        let firstEmailId = sortedEvents[0].emailId
+        const firstEmailId = sortedEvents[0].emailId
+
+        // Skip if no emailId (should not happen with preloaded emails)
+        if (!firstEmailId) {
+          console.error(`Order ${orderNumber}: No emailId found in events, skipping`)
+          continue
+        }
 
         for (const event of sortedEvents) {
           try {
@@ -245,9 +249,12 @@ export default class PackageExtractionService {
             if (!trackingUrl && eventData.trackingUrl) trackingUrl = eventData.trackingUrl
             if (!carrier && eventData.carrier) carrier = eventData.carrier
             if (!carrierRaw && eventData.carrierRaw) carrierRaw = eventData.carrierRaw
-            if (!destinationCity && eventData.destinationCity) destinationCity = eventData.destinationCity
-            if (!destinationState && eventData.destinationState) destinationState = eventData.destinationState
-            if (!destinationZip && eventData.destinationZip) destinationZip = eventData.destinationZip
+            if (!destinationCity && eventData.destinationCity)
+              destinationCity = eventData.destinationCity
+            if (!destinationState && eventData.destinationState)
+              destinationState = eventData.destinationState
+            if (!destinationZip && eventData.destinationZip)
+              destinationZip = eventData.destinationZip
 
             // Update estimated delivery if more recent info available
             if (eventData.estimatedDelivery) {
@@ -267,14 +274,13 @@ export default class PackageExtractionService {
         }
 
         // Use first tracking number or create composite if multiple
-        const primaryTrackingNumber = trackingNumbers.length > 0
-          ? trackingNumbers[0]
-          : `ORDER-${orderNumber}`
+        const primaryTrackingNumber =
+          trackingNumbers.length > 0 ? trackingNumbers[0] : `ORDER-${orderNumber}`
 
         if (!pkg) {
           // Create new package
           pkg = await this.packageRepository.create({
-            emailId: firstEmailId || undefined,
+            emailId: firstEmailId,
             trackingNumber: primaryTrackingNumber,
             trackingUrl,
             carrier,
@@ -293,7 +299,9 @@ export default class PackageExtractionService {
             destinationZip,
           })
           packagesCreated++
-          console.log(`Created package for order ${orderNumber} with ${trackingNumbers.length} tracking numbers`)
+          console.log(
+            `Created package for order ${orderNumber} with ${trackingNumbers.length} tracking numbers`
+          )
         } else {
           // Update existing package
           await this.packageRepository.update(pkg.id, {

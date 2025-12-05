@@ -15,9 +15,9 @@ export default class DebugEvents extends BaseCommand {
   declare emailAccountId: string
 
   async run() {
-    const emailAccountIdNum = parseInt(this.emailAccountId, 10)
+    const emailAccountIdNum = Number.parseInt(this.emailAccountId, 10)
 
-    if (isNaN(emailAccountIdNum)) {
+    if (Number.isNaN(emailAccountIdNum)) {
       this.logger.error('Invalid email account ID')
       return
     }
@@ -32,7 +32,12 @@ export default class DebugEvents extends BaseCommand {
       return
     }
 
-    this.logger.info(`Sample email IDs: ${emails.slice(0, 5).map((e) => e.id).join(', ')}`)
+    this.logger.info(
+      `Sample email IDs: ${emails
+        .slice(0, 5)
+        .map((e) => e.id)
+        .join(', ')}`
+    )
 
     // Now check for events
     const events = await PackageEvent.query()
@@ -44,12 +49,23 @@ export default class DebugEvents extends BaseCommand {
     this.logger.info(`Found ${events.length} events for account ${emailAccountIdNum}`)
 
     if (events.length > 0) {
-      this.logger.info(`Sample event IDs: ${events.slice(0, 5).map((e) => e.id).join(', ')}`)
       this.logger.info(
-        `Sample packageIds: ${events.slice(0, 5).map((e) => e.packageId || 'null').join(', ')}`
+        `Sample event IDs: ${events
+          .slice(0, 5)
+          .map((e) => e.id)
+          .join(', ')}`
       )
       this.logger.info(
-        `Sample order numbers: ${events.slice(0, 5).map((e) => e.orderNumber || 'N/A').join(', ')}`
+        `Sample packageIds: ${events
+          .slice(0, 5)
+          .map((e) => e.packageId || 'null')
+          .join(', ')}`
+      )
+      this.logger.info(
+        `Sample order numbers: ${events
+          .slice(0, 5)
+          .map((e) => e.orderNumber || 'N/A')
+          .join(', ')}`
       )
 
       // Count how many have packageId set

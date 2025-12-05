@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Package as PackageIcon, Truck, CheckCircle, Clock, AlertCircle, ExternalLink, X, MapPin, Calendar } from 'lucide-react';
 import api from '../api/client';
 import './Tracking.css';
@@ -71,20 +72,8 @@ const getStatusIcon = (status: string) => {
   }
 };
 
-const getStatusLabel = (status: string): string => {
-  const labels: { [key: string]: string } = {
-    ordered: 'Ordered',
-    processing: 'Processing',
-    shipped: 'Shipped',
-    in_transit: 'In Transit',
-    out_for_delivery: 'Out for Delivery',
-    delivered: 'Delivered',
-    exception: 'Exception',
-    cancelled: 'Cancelled',
-    unknown: 'Unknown',
-  };
-  return labels[status] || status;
-};
+// Note: getStatusLabel is now a method that takes t() as parameter
+// We'll update the calls inline in the component
 
 const formatDate = (dateString: string | null): string => {
   if (!dateString) return 'N/A';
@@ -111,6 +100,7 @@ const isActive = (status: string): boolean => {
 };
 
 export const Tracking = () => {
+  const { t } = useTranslation('tracking');
   const [packages, setPackages] = useState<PackageData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'active' | 'delivered'>('all');
@@ -120,8 +110,14 @@ export const Tracking = () => {
   const [packageToMarkDelivered, setPackageToMarkDelivered] = useState<PackageData | null>(null);
   const [deliveryDate, setDeliveryDate] = useState('');
 
+  // Helper to get translated status label
+  const getStatusLabel = (status: string): string => {
+    return t(`status.${status}`, status);
+  };
+
   useEffect(() => {
     fetchPackages();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
 
   const fetchPackages = async () => {
@@ -198,7 +194,7 @@ export const Tracking = () => {
       <div className="tracking-container">
         <div className="tracking-loading">
           <div className="spinner"></div>
-          <p>Loading packages...</p>
+          <p>{t('loading')}</p>
         </div>
       </div>
     );
@@ -209,9 +205,9 @@ export const Tracking = () => {
       <div className="tracking-header">
         <div className="tracking-title">
           <PackageIcon size={32} />
-          <h1>Package Tracking</h1>
+          <h1>{t('title')}</h1>
         </div>
-        <p className="tracking-subtitle">Track all your deliveries in one place</p>
+        <p className="tracking-subtitle">{t('subtitle')}</p>
       </div>
 
       {/* Stats */}
@@ -222,7 +218,7 @@ export const Tracking = () => {
           </div>
           <div className="stat-content">
             <div className="stat-value">{activeCount}</div>
-            <div className="stat-label">Active</div>
+            <div className="stat-label">{t('stats.active')}</div>
           </div>
         </div>
         <div className="stat-card">
@@ -231,7 +227,7 @@ export const Tracking = () => {
           </div>
           <div className="stat-content">
             <div className="stat-value">{deliveredCount}</div>
-            <div className="stat-label">Delivered</div>
+            <div className="stat-label">{t('stats.delivered')}</div>
           </div>
         </div>
         <div className="stat-card">
@@ -240,7 +236,7 @@ export const Tracking = () => {
           </div>
           <div className="stat-content">
             <div className="stat-value">{packages.length}</div>
-            <div className="stat-label">Total</div>
+            <div className="stat-label">{t('stats.total')}</div>
           </div>
         </div>
       </div>
@@ -251,19 +247,19 @@ export const Tracking = () => {
           className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
           onClick={() => setFilter('all')}
         >
-          All Packages
+          {t('filters.all')}
         </button>
         <button
           className={`filter-btn ${filter === 'active' ? 'active' : ''}`}
           onClick={() => setFilter('active')}
         >
-          Active
+          {t('filters.active')}
         </button>
         <button
           className={`filter-btn ${filter === 'delivered' ? 'active' : ''}`}
           onClick={() => setFilter('delivered')}
         >
-          Delivered
+          {t('filters.delivered')}
         </button>
       </div>
 
@@ -272,20 +268,20 @@ export const Tracking = () => {
         {packages.length === 0 ? (
           <div className="empty-state">
             <PackageIcon size={64} />
-            <h2>No packages found</h2>
-            <p>Your package tracking information will appear here once we detect delivery emails.</p>
+            <h2>{t('empty.title')}</h2>
+            <p>{t('empty.description')}</p>
           </div>
         ) : (
           <table className="packages-table">
             <thead>
               <tr>
-                <th>Status</th>
-                <th>Brand / Item</th>
-                <th>Tracking</th>
-                <th>Order #</th>
-                <th>Location</th>
-                <th>Delivery</th>
-                <th>Carrier</th>
+                <th>{t('table.status')}</th>
+                <th>{t('table.brand_item')}</th>
+                <th>{t('table.tracking')}</th>
+                <th>{t('table.order')}</th>
+                <th>{t('table.location')}</th>
+                <th>{t('table.delivery')}</th>
+                <th>{t('table.carrier')}</th>
                 <th></th>
               </tr>
             </thead>
@@ -309,7 +305,7 @@ export const Tracking = () => {
                   </td>
                   <td>
                     <div className="brand-cell">
-                      <div className="brand-name">{pkg.brand || 'Unknown'}</div>
+                      <div className="brand-name">{pkg.brand || t('table.unknown_brand')}</div>
                       {pkg.itemName && <div className="item-name">{pkg.itemName}</div>}
                     </div>
                   </td>
@@ -386,7 +382,7 @@ export const Tracking = () => {
             <div className="modal-header">
               <div className="modal-title">
                 <CheckCircle size={24} />
-                <h2>Mark as Delivered</h2>
+                <h2>{t('delivery_modal.title')}</h2>
               </div>
               <button className="modal-close" onClick={cancelMarkDelivered}>
                 <X size={24} />
@@ -396,11 +392,11 @@ export const Tracking = () => {
             <div className="modal-body">
               <div className="delivery-modal-content">
                 <p className="delivery-modal-description">
-                  Mark package <strong>{packageToMarkDelivered.trackingNumber}</strong> as delivered?
+                  {t('delivery_modal.description', { trackingNumber: packageToMarkDelivered.trackingNumber })}
                 </p>
 
                 <div className="form-group">
-                  <label htmlFor="delivery-date">Delivery Date</label>
+                  <label htmlFor="delivery-date">{t('delivery_modal.delivery_date')}</label>
                   <input
                     id="delivery-date"
                     type="date"
@@ -413,11 +409,11 @@ export const Tracking = () => {
 
                 <div className="modal-actions">
                   <button className="btn-cancel" onClick={cancelMarkDelivered}>
-                    Cancel
+                    {t('delivery_modal.cancel')}
                   </button>
                   <button className="btn-confirm" onClick={confirmMarkDelivered}>
                     <CheckCircle size={18} />
-                    Confirm Delivery
+                    {t('delivery_modal.confirm')}
                   </button>
                 </div>
               </div>
@@ -433,17 +429,17 @@ export const Tracking = () => {
             <div className="modal-header">
               <div className="modal-title">
                 <PackageIcon size={24} />
-                <h2>Package Details</h2>
+                <h2>{t('modal.package_details')}</h2>
               </div>
               <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                 {selectedPackage.status !== 'delivered' && (
                   <button
                     className="mark-delivered-btn"
                     onClick={(e) => handleMarkDelivered(selectedPackage, e)}
-                    title="Mark as delivered"
+                    title={t('modal.mark_delivered')}
                   >
                     <CheckCircle size={18} />
-                    Mark as Delivered
+                    {t('modal.mark_delivered')}
                   </button>
                 )}
                 <button className="modal-close" onClick={() => setSelectedPackage(null)}>
@@ -485,16 +481,16 @@ export const Tracking = () => {
                   </div>
                   <div className="progress-labels">
                     <span className={selectedPackage.status === 'ordered' || selectedPackage.status === 'processing' || selectedPackage.status === 'shipped' || selectedPackage.status === 'in_transit' || selectedPackage.status === 'out_for_delivery' || selectedPackage.status === 'delivered' ? 'active' : ''}>
-                      Ordered
+                      {t('modal.progress.ordered')}
                     </span>
                     <span className={selectedPackage.status === 'shipped' || selectedPackage.status === 'in_transit' || selectedPackage.status === 'out_for_delivery' || selectedPackage.status === 'delivered' ? 'active' : ''}>
-                      Shipped
+                      {t('modal.progress.shipped')}
                     </span>
                     <span className={selectedPackage.status === 'out_for_delivery' || selectedPackage.status === 'delivered' ? 'active' : ''}>
-                      Out for Delivery
+                      {t('modal.progress.out_for_delivery')}
                     </span>
                     <span className={selectedPackage.status === 'delivered' ? 'active' : ''}>
-                      Delivered
+                      {t('modal.progress.delivered')}
                     </span>
                   </div>
                 </div>
@@ -502,27 +498,27 @@ export const Tracking = () => {
 
               {/* Brand & Item */}
               <div className="modal-section">
-                <h3>Order Information</h3>
+                <h3>{t('modal.order_information')}</h3>
                 <div className="modal-info-grid">
                   <div className="modal-info-item">
-                    <label>Brand</label>
-                    <div className="value">{selectedPackage.brand || 'Unknown'}</div>
+                    <label>{t('modal.brand')}</label>
+                    <div className="value">{selectedPackage.brand || t('table.unknown_brand')}</div>
                   </div>
                   {selectedPackage.itemName && (
                     <div className="modal-info-item full-width">
-                      <label>Item</label>
+                      <label>{t('modal.item')}</label>
                       <div className="value">{selectedPackage.itemName}</div>
                     </div>
                   )}
                   {selectedPackage.orderNumber && (
                     <div className="modal-info-item">
-                      <label>Order Number</label>
+                      <label>{t('modal.order_number')}</label>
                       <div className="value">{selectedPackage.orderNumber}</div>
                     </div>
                   )}
                   {selectedPackage.orderDate && (
                     <div className="modal-info-item">
-                      <label>Order Date</label>
+                      <label>{t('modal.order_date')}</label>
                       <div className="value">
                         <Calendar size={16} />
                         {formatDate(selectedPackage.orderDate)}
@@ -534,17 +530,17 @@ export const Tracking = () => {
 
               {/* Tracking Information */}
               <div className="modal-section">
-                <h3>Tracking Information</h3>
+                <h3>{t('modal.tracking_information')}</h3>
                 <div className="modal-info-grid">
                   <div className="modal-info-item">
-                    <label>Tracking Number</label>
+                    <label>{t('modal.tracking_number')}</label>
                     <div className="value tracking-number-modal">
                       {selectedPackage.trackingNumber}
                     </div>
                   </div>
                   {(selectedPackage.carrier || selectedPackage.carrierRaw) && (
                     <div className="modal-info-item">
-                      <label>Carrier</label>
+                      <label>{t('modal.carrier')}</label>
                       <div className="value">
                         {selectedPackage.carrier || selectedPackage.carrierRaw}
                       </div>
@@ -552,7 +548,7 @@ export const Tracking = () => {
                   )}
                   {selectedPackage.trackingUrl && (
                     <div className="modal-info-item full-width">
-                      <label>Tracking Link</label>
+                      <label>{t('modal.tracking_link')}</label>
                       <div className="value">
                         <a
                           href={selectedPackage.trackingUrl}
@@ -561,7 +557,7 @@ export const Tracking = () => {
                           className="tracking-link"
                         >
                           <ExternalLink size={16} />
-                          Open tracking page
+                          {t('modal.open_tracking')}
                         </a>
                       </div>
                     </div>
@@ -571,11 +567,11 @@ export const Tracking = () => {
 
               {/* Location & Delivery */}
               <div className="modal-section">
-                <h3>Location & Delivery</h3>
+                <h3>{t('modal.location_delivery')}</h3>
                 <div className="modal-info-grid">
                   {selectedPackage.currentLocation && (
                     <div className="modal-info-item full-width">
-                      <label>Current Location</label>
+                      <label>{t('modal.current_location')}</label>
                       <div className="value current-loc">
                         <MapPin size={16} />
                         {selectedPackage.currentLocation}
@@ -586,7 +582,7 @@ export const Tracking = () => {
                     selectedPackage.destinationState ||
                     selectedPackage.destinationZip) && (
                     <div className="modal-info-item full-width">
-                      <label>Destination</label>
+                      <label>{t('modal.destination')}</label>
                       <div className="value">
                         <MapPin size={16} />
                         {[
@@ -601,7 +597,7 @@ export const Tracking = () => {
                   )}
                   {selectedPackage.estimatedDelivery && (
                     <div className="modal-info-item">
-                      <label>Estimated Delivery</label>
+                      <label>{t('modal.estimated_delivery')}</label>
                       <div className="value">
                         <Clock size={16} />
                         {formatDate(selectedPackage.estimatedDelivery)}
@@ -610,7 +606,7 @@ export const Tracking = () => {
                   )}
                   {selectedPackage.actualDelivery && (
                     <div className="modal-info-item">
-                      <label>Delivered On</label>
+                      <label>{t('modal.delivered_on')}</label>
                       <div className="value delivered">
                         <CheckCircle size={16} />
                         {formatDate(selectedPackage.actualDelivery)}
@@ -623,10 +619,10 @@ export const Tracking = () => {
               {/* Progress Timeline */}
               {selectedPackage.events && selectedPackage.events.length > 0 && (
                 <div className="modal-section">
-                  <h3>Tracking Timeline</h3>
+                  <h3>{t('modal.tracking_timeline')}</h3>
                   <div className="timeline-container">
                     {isLoadingDetails ? (
-                      <div className="timeline-loading">Loading events...</div>
+                      <div className="timeline-loading">{t('modal.loading_events')}</div>
                     ) : (
                       <div className="timeline">
                         {selectedPackage.events
@@ -667,7 +663,7 @@ export const Tracking = () => {
                                 )}
                                 {event.trackingNumber && event.trackingNumber !== selectedPackage.trackingNumber && (
                                   <div className="timeline-tracking">
-                                    Tracking: <code>{event.trackingNumber}</code>
+                                    {t('modal.tracking_prefix')} <code>{event.trackingNumber}</code>
                                   </div>
                                 )}
                               </div>
@@ -683,11 +679,11 @@ export const Tracking = () => {
               <div className="modal-section metadata">
                 <div className="modal-info-grid">
                   <div className="modal-info-item">
-                    <label>Created</label>
+                    <label>{t('modal.created')}</label>
                     <div className="value small">{formatDate(selectedPackage.createdAt)}</div>
                   </div>
                   <div className="modal-info-item">
-                    <label>Last Updated</label>
+                    <label>{t('modal.last_updated')}</label>
                     <div className="value small">{formatDate(selectedPackage.updatedAt)}</div>
                   </div>
                 </div>

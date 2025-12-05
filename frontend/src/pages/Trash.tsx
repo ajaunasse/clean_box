@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import api from '../api/client';
 import './Trash.css';
 
@@ -11,6 +12,7 @@ interface TrashEmail {
 }
 
 export const Trash = () => {
+  const { t } = useTranslation('trash');
   const [emails, setEmails] = useState<TrashEmail[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -45,20 +47,20 @@ export const Trash = () => {
     );
   });
 
-  if (isLoading) return <div>Loading trash...</div>;
+  if (isLoading) return <div>{t('loading')}</div>;
 
   return (
     <div className="trash-container">
       <div className="trash-header">
         <div className="trash-header-left">
-          <h1>Trash</h1>
-          <p>Emails without promotions</p>
+          <h1>{t('title')}</h1>
+          <p>{t('subtitle')}</p>
         </div>
         {emails.length > 0 && (
           <div className="trash-search">
             <input
               type="text"
-              placeholder="Search emails..."
+              placeholder={t('search_placeholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="trash-search-input"
@@ -74,13 +76,13 @@ export const Trash = () => {
 
       {emails.length === 0 ? (
         <div className="empty-state-large">
-          <h3>No emails in trash</h3>
-          <p>All your emails contain promotions!</p>
+          <h3>{t('empty.title')}</h3>
+          <p>{t('empty.description')}</p>
         </div>
       ) : filteredEmails.length === 0 ? (
         <div className="empty-state-large">
-          <h3>No emails match your search</h3>
-          <p>Try adjusting your search term.</p>
+          <h3>{t('no_match.title')}</h3>
+          <p>{t('no_match.description')}</p>
         </div>
       ) : (
         <div className="trash-list">
@@ -92,7 +94,7 @@ export const Trash = () => {
                   {email.sentAt ? new Date(email.sentAt).toLocaleDateString() : 'N/A'}
                 </span>
               </div>
-              <h3 className="trash-subject">{email.subject || '(No subject)'}</h3>
+              <h3 className="trash-subject">{email.subject || t('no_subject')}</h3>
               <p className="trash-snippet">{email.snippet}</p>
             </div>
           ))}

@@ -13,24 +13,15 @@
         "description": "Package tracking number (use 'PENDING' if order is confirmed but not yet shipped)"
       },
       "orderNumber": {
-        "type": [
-          "string",
-          "null"
-        ],
+        "type": ["string", "null"],
         "description": "Order or reference number"
       },
       "carrier": {
-        "type": [
-          "string",
-          "null"
-        ],
+        "type": ["string", "null"],
         "description": "Standardized carrier name (e.g., 'UPS', 'FedEx', 'USPS', 'DHL', 'Colissimo', 'Chronopost', etc.)"
       },
       "carrierRaw": {
-        "type": [
-          "string",
-          "null"
-        ],
+        "type": ["string", "null"],
         "description": "Raw carrier name as it appears in the email"
       },
       "status": {
@@ -49,17 +40,11 @@
         ]
       },
       "brand": {
-        "type": [
-          "string",
-          "null"
-        ],
+        "type": ["string", "null"],
         "description": "Brand or merchant name"
       },
       "items": {
-        "type": [
-          "array",
-          "null"
-        ],
+        "type": ["array", "null"],
         "description": "Array of items in the order",
         "items": {
           "type": "object",
@@ -69,86 +54,51 @@
               "description": "Product name"
             },
             "quantity": {
-              "type": [
-                "number",
-                "null"
-              ],
+              "type": ["number", "null"],
               "description": "Quantity ordered",
               "minimum": 0
             },
             "variant": {
-              "type": [
-                "string",
-                "null"
-              ],
+              "type": ["string", "null"],
               "description": "Product variant (color, size, etc.)"
             },
             "price": {
-              "type": [
-                "string",
-                "null"
-              ],
+              "type": ["string", "null"],
               "description": "Item price"
             }
           },
-          "required": [
-            "name",
-            "quantity",
-            "variant",
-            "price"
-          ],
+          "required": ["name", "quantity", "variant", "price"],
           "additionalProperties": false
         }
       },
       "orderDate": {
-        "type": [
-          "string",
-          "null"
-        ],
+        "type": ["string", "null"],
         "format": "date",
         "description": "Order date in ISO 8601 format (YYYY-MM-DD)"
       },
       "estimatedDelivery": {
-        "type": [
-          "string",
-          "null"
-        ],
+        "type": ["string", "null"],
         "format": "date",
         "description": "Estimated delivery date in ISO 8601 format (YYYY-MM-DD)"
       },
       "currentLocation": {
-        "type": [
-          "string",
-          "null"
-        ],
+        "type": ["string", "null"],
         "description": "Current package location"
       },
       "destinationCity": {
-        "type": [
-          "string",
-          "null"
-        ],
+        "type": ["string", "null"],
         "description": "Destination city"
       },
       "destinationState": {
-        "type": [
-          "string",
-          "null"
-        ],
+        "type": ["string", "null"],
         "description": "Destination state/region"
       },
       "destinationZip": {
-        "type": [
-          "string",
-          "null"
-        ],
+        "type": ["string", "null"],
         "description": "Destination postal code"
       },
       "trackingUrl": {
-        "type": [
-          "string",
-          "null"
-        ],
+        "type": ["string", "null"],
         "description": "URL to track the package"
       },
       "confidence": {

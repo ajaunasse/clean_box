@@ -16,7 +16,7 @@ export default class TestPackageExtraction extends BaseCommand {
   declare emailId: string
 
   async run() {
-    const emailIdNum = parseInt(this.emailId, 10)
+    const emailIdNum = Number.parseInt(this.emailId, 10)
     this.logger.info(`Testing package extraction for email ID: ${emailIdNum}`)
 
     try {

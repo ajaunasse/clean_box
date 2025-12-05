@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/useAuth';
 import { useNavigate, Link } from 'react-router-dom';
 import './Auth.css';
 
 export const Register = () => {
+  const { t } = useTranslation('auth');
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,7 +22,7 @@ export const Register = () => {
     } catch (err) {
       setError(
         (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-          'Registration failed'
+          t('register.error')
       );
     }
   };
@@ -28,14 +30,14 @@ export const Register = () => {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h1>Create Account</h1>
-        <p className="auth-subtitle">Start saving with CleanBox</p>
+        <h1>{t('register.title')}</h1>
+        <p className="auth-subtitle">{t('register.subtitle')}</p>
 
         {error && <div className="auth-error">{error}</div>}
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="fullName">Full Name</label>
+            <label htmlFor="fullName">{t('register.full_name')}</label>
             <input
               type="text"
               id="fullName"
@@ -46,7 +48,7 @@ export const Register = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">{t('register.email')}</label>
             <input
               type="email"
               id="email"
@@ -57,7 +59,7 @@ export const Register = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">{t('register.password')}</label>
             <input
               type="password"
               id="password"
@@ -68,23 +70,23 @@ export const Register = () => {
           </div>
 
           <button type="submit" className="btn btn-primary btn-full">
-            Sign Up
+            {t('register.submit')}
           </button>
         </form>
 
         <div className="auth-divider">
-          <span>OR</span>
+          <span>{t('register.or')}</span>
         </div>
 
         <a
           href="http://localhost:3333/api/auth/google/redirect"
           className="btn btn-google btn-full"
         >
-          Sign up with Google
+          {t('register.google_button')}
         </a>
 
         <p className="auth-footer">
-          Already have an account? <Link to="/login">Sign in</Link>
+          {t('register.footer')} <Link to="/login">{t('register.footer_link')}</Link>
         </p>
       </div>
     </div>

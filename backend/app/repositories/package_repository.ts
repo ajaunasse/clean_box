@@ -38,11 +38,13 @@ export default class PackageRepository {
       .apply((scopes) => scopes.forUser(userId))
       .apply((scopes) => scopes.active())
       .preload('email')
-      .orderByRaw(`(
+      .orderByRaw(
+        `(
         SELECT MAX(event_timestamp)
         FROM package_events
         WHERE package_events.package_id = packages.id
-      ) DESC NULLS LAST`)
+      ) DESC NULLS LAST`
+      )
       .orderBy('updatedAt', 'desc')
       .paginate(page, limit)
   }
@@ -54,11 +56,13 @@ export default class PackageRepository {
     return Package.query()
       .apply((scopes) => scopes.forUser(userId))
       .preload('email')
-      .orderByRaw(`(
+      .orderByRaw(
+        `(
         SELECT MAX(event_timestamp)
         FROM package_events
         WHERE package_events.package_id = packages.id
-      ) DESC NULLS LAST`)
+      ) DESC NULLS LAST`
+      )
       .orderBy('updatedAt', 'desc')
       .paginate(page, limit)
   }
@@ -71,11 +75,13 @@ export default class PackageRepository {
       .apply((scopes) => scopes.forUser(userId))
       .apply((scopes) => scopes.byStatus(status))
       .preload('email')
-      .orderByRaw(`(
+      .orderByRaw(
+        `(
         SELECT MAX(event_timestamp)
         FROM package_events
         WHERE package_events.package_id = packages.id
-      ) DESC NULLS LAST`)
+      ) DESC NULLS LAST`
+      )
       .orderBy('updatedAt', 'desc')
       .paginate(page, limit)
   }

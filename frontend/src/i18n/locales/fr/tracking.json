@@ -1,32 +1,77 @@
 {
   "title": "Suivi de Colis",
   "subtitle": "Suivez toutes vos livraisons en un seul endroit",
-  "search_placeholder": "Rechercher des colis...",
+  "loading": "Chargement des colis...",
+  "stats": {
+    "active": "Actifs",
+    "delivered": "Livrés",
+    "total": "Total"
+  },
   "filters": {
     "all": "Tous les Colis",
-    "in_transit": "En Transit",
-    "delivered": "Livré",
-    "pending": "En Attente"
+    "active": "Actifs",
+    "delivered": "Livrés"
   },
   "status": {
-    "pending": "En attente",
+    "ordered": "Commandé",
+    "processing": "En préparation",
+    "shipped": "Expédié",
     "in_transit": "En transit",
     "out_for_delivery": "En cours de livraison",
     "delivered": "Livré",
     "exception": "Exception",
+    "cancelled": "Annulé",
     "unknown": "Inconnu"
   },
-  "carrier": "Transporteur",
-  "tracking_number": "N° de suivi",
-  "estimated_delivery": "Livraison Estimée",
-  "last_update": "Dernière Mise à Jour",
-  "track": "Suivre",
-  "empty": {
-    "title": "Aucun colis suivi pour le moment",
-    "description": "Les informations de suivi de colis apparaîtront ici automatiquement depuis vos emails."
+  "table": {
+    "status": "Statut",
+    "brand_item": "Marque / Article",
+    "tracking": "Suivi",
+    "order": "N° Commande",
+    "location": "Localisation",
+    "delivery": "Livraison",
+    "carrier": "Transporteur",
+    "unknown_brand": "Inconnu"
   },
-  "no_match": {
-    "title": "Aucun colis ne correspond à votre recherche",
-    "description": "Essayez d'ajuster votre recherche ou vos filtres."
+  "modal": {
+    "package_details": "Détails du Colis",
+    "order_information": "Informations de Commande",
+    "brand": "Marque",
+    "item": "Article",
+    "order_number": "Numéro de Commande",
+    "order_date": "Date de Commande",
+    "tracking_information": "Informations de Suivi",
+    "tracking_number": "Numéro de Suivi",
+    "carrier": "Transporteur",
+    "tracking_link": "Lien de Suivi",
+    "open_tracking": "Ouvrir la page de suivi",
+    "location_delivery": "Localisation & Livraison",
+    "current_location": "Localisation Actuelle",
+    "destination": "Destination",
+    "estimated_delivery": "Livraison Estimée",
+    "delivered_on": "Livré le",
+    "tracking_timeline": "Chronologie du Suivi",
+    "loading_events": "Chargement des événements...",
+    "created": "Créé",
+    "last_updated": "Dernière Mise à Jour",
+    "mark_delivered": "Marquer comme Livré",
+    "tracking_prefix": "Suivi :",
+    "progress": {
+      "ordered": "Commandé",
+      "shipped": "Expédié",
+      "out_for_delivery": "En Livraison",
+      "delivered": "Livré"
+    }
+  },
+  "delivery_modal": {
+    "title": "Marquer comme Livré",
+    "description": "Marquer le colis {{trackingNumber}} comme livré ?",
+    "delivery_date": "Date de Livraison",
+    "cancel": "Annuler",
+    "confirm": "Confirmer la Livraison"
+  },
+  "empty": {
+    "title": "Aucun colis trouvé",
+    "description": "Les informations de suivi de vos colis apparaîtront ici une fois que nous détecterons des emails de livraison."
   }
 }

@@ -1,24 +1,39 @@
 {
   "title": "Coffre-fort des Promos",
-  "subtitle": "Tous vos codes promo organisés par vendeur",
-  "search_placeholder": "Rechercher des vendeurs...",
-  "total_codes": "{{count}} code",
-  "total_codes_plural": "{{count}} codes",
-  "copy_code": "Copier le Code",
-  "copied": "Copié !",
-  "visit_website": "Visiter le Site",
+  "subtitle": "Votre collection de codes actifs",
+  "loading": "Chargement du coffre...",
+  "search_placeholder": "Rechercher par marque...",
+  "show_expired": "Afficher les expirés",
+  "categories": {
+    "all": "Tous",
+    "fashion": "Mode",
+    "technology": "Technologie",
+    "sports": "Sport & Fitness",
+    "beauty": "Beauté & Santé",
+    "food": "Alimentation & Boissons",
+    "home": "Maison & Jardin",
+    "travel": "Voyage",
+    "entertainment": "Divertissement",
+    "books": "Livres & Médias",
+    "services": "Services",
+    "other": "Autre"
+  },
   "expires": "Expire le : {{date}}",
-  "no_expiry": "Pas d'expiration",
   "badges": {
     "expires_soon": "Expire bientôt !",
     "expired": "Expiré"
   },
   "empty": {
-    "title": "Aucun code promo dans votre coffre-fort",
-    "description": "Scannez vos emails pour découvrir et sauvegarder des codes promo ici."
+    "title": "Aucun code dans le coffre",
+    "description": "Vos codes promo sauvegardés apparaîtront ici."
   },
   "no_match": {
-    "title": "Aucun vendeur ne correspond à votre recherche",
-    "description": "Essayez un autre terme de recherche."
+    "title": "Aucun code ne correspond à vos filtres",
+    "description": "Essayez d'ajuster votre catégorie ou votre recherche de marque."
+  },
+  "loading_more": "Chargement de plus de codes...",
+  "no_more": "Plus de codes à charger",
+  "toast": {
+    "copied": "Code copié dans le presse-papiers !"
   }
 }

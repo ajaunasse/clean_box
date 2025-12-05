@@ -14,7 +14,7 @@ export default class CheckEmail extends BaseCommand {
   declare emailId: string
 
   async run() {
-    const emailIdNum = parseInt(this.emailId, 10)
+    const emailIdNum = Number.parseInt(this.emailId, 10)
     this.logger.info(`Checking email ID: ${emailIdNum}`)
 
     try {
